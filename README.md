@@ -19,6 +19,6 @@ Oferecer praticidade, organização e maior transparência na administração do
 Para o desenvolvimento utilizaremos:
 | Ferramenta | Versão |
 | :---: | :---: |
-| Python | 3.13.0 |
+| Python | 3.13.5 |
 | Django | 6.0.4 |
 | Mysql |  8.4 |
