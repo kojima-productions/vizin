@@ -4,8 +4,8 @@ Vizin é uma aplicação web de gerenciamento de condominio, com o objetivo de a
 ## Objetivos
 A aplicação busca atender necessidades comuns como: 
 - Cadastro de veiculos e vagas de garagem;
-- Controle e registro de visitantes,
-- Realização de reclamações e solicitações,
+- Controle e registro de visitantes;
+- Realização de reclamações e solicitações;
 - Agendamento de áreas de lazer;
 - Acesso ao quadro de funcionários disponiveis no dia;
 - Visualizar boletos referentes a mensalidades e rateios;
