@@ -1,0 +1,17 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>{% trans "Completar cadastro" %}</title>
+</head>
+<body>
+  <h1>{% trans "Completar cadastro" %}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% trans "Continuar" %}</button>
+  </form>
+</body>
+</html>

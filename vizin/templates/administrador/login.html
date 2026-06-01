@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -18,6 +19,9 @@
     </table>
     <button type="submit">Entrar</button>
   </form>
+
+  <p>Ou</p>
+  <p><a href="{% provider_login_url 'google' %}">Entrar com Google</a></p>
 
   <p>Ainda não tem conta? <a href="{% url 'administrador:registro' %}">Cadastre-se</a></p>
 </body>

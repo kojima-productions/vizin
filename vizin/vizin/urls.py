@@ -20,4 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('administrador/', include('apps.administrador.urls')),
+
+    # django-allauth routes (accounts/, social login callbacks, etc.)
+    path('accounts/', include('allauth.urls')),
 ]
