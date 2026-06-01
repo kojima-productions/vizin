@@ -1,24 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <title>Cadastro de Administrador</title>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
 </head>
-<body>
-  <h1>Cadastro de Administrador</h1>
+<body class="auth-page">
+  <div class="container">
+    <div class="auth-box card">
+      <h1>Cadastro de Administrador</h1>
 
-  {% if form.non_field_errors %}
-    <div style="color:red">{{ form.non_field_errors }}</div>
-  {% endif %}
+      {% if form.non_field_errors %}
+        <div style="color:red">{{ form.non_field_errors }}</div>
+      {% endif %}
 
-  <form method="post">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-    </table>
-    <button type="submit">Cadastrar</button>
-  </form>
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <table>
+            {{ form.as_table }}
+          </table>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Cadastrar</button>
+        </div>
+      </form>
 
-  <p>Já tem conta? <a href="{% url 'administrador:login' %}">Entrar</a></p>
+      <p class="small text-center mt-2">Já tem conta? <a href="{% url 'administrador:login' %}">Entrar</a></p>
+    </div>
+  </div>
 </body>
 </html>

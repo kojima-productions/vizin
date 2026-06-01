@@ -154,7 +154,14 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# URL prefix for static files
+STATIC_URL = '/static/'
+
+# During development, serve static files from the project's static/ directory
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Directory where collectstatic will copy files for production
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Após login, redirecionar administradores ao painel
 LOGIN_REDIRECT_URL = '/administrador/painel/'

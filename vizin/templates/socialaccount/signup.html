@@ -1,17 +1,28 @@
-{% load i18n %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <title>{% trans "Completar cadastro" %}</title>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
 </head>
-<body>
-  <h1>{% trans "Completar cadastro" %}</h1>
+<body class="auth-page">
+  <div class="container">
+    <div class="auth-box card">
+      <h1>{% trans "Completar cadastro" %}</h1>
+      <p class="lead small">Complete os campos abaixo para finalizar o cadastro.</p>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">{% trans "Continuar" %}</button>
-  </form>
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-actions">
+          <button class="btn" type="submit">{% trans "Continuar" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
