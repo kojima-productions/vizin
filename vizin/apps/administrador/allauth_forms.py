@@ -5,6 +5,14 @@ from .models import Administrador
 class AdministradorSocialSignupForm(forms.Form):
     cpf = forms.CharField(max_length=20, label='CPF')
 
+    def __init__(self, *args, sociallogin=None, **kwargs):
+        """Accept sociallogin kwarg that allauth passes when instantiating the form.
+
+        Store sociallogin for potential use (not required here) and call super.
+        """
+        self.sociallogin = sociallogin
+        super().__init__(*args, **kwargs)
+
     def clean_cpf(self):
         cpf_raw = self.cleaned_data.get('cpf', '')
         cpf = re.sub(r'\D', '', cpf_raw)
@@ -16,4 +24,13 @@ class AdministradorSocialSignupForm(forms.Form):
         self.cleaned_data['cpf'] = cpf
         return cpf
 
-    # allauth will call save in adapter; the form does not need save() here
+    def save(self, request, user=None):
+        return user
+
+    def try_save(self, request):
+        sociallogin = getattr(self, 'sociallogin', None)
+        if sociallogin is None:
+            return None, None
+        from allauth.socialaccount.adapter import get_adapter as get_social_adapter
+        user = get_social_adapter().save_user(request, sociallogin, form=self)
+        return user, None
