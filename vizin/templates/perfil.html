@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vizin - Perfil</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    
+    <main class="page-wrapper">
+        
+        <div class="profile-card">
+            
+            <!-- Cabeçalho do Perfil com a foto e os dados do condomínio -->
+<div class="profile-header">
+    
+    <!-- Container para a foto e o ícone de mudança -->
+    <div class="avatar-container">
+        <img src="assets/icon.jpeg" alt="Foto de Perfil" class="profile-avatar">
+        
+        
+        <input type="file" id="change-avatar-input" accept="image/*" style="display: none;">
+        
+        
+        <label for="change-avatar-input" class="change-avatar-label" title="Mudar foto de perfil">
+            <!-- Um pequeno ícone de caneta/lápis -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13M18.5 2.5C18.8978 2.10217 19.437 1.87868 20 1.87868C20.563 1.87868 21.1022 2.10217 21.5 2.5C21.8978 2.89783 22.1213 3.43696 22.1213 4C22.1213 4.56304 21.8978 5.10217 21.5 5.5L11 16L7 17L8 13L18.5 2.5Z" stroke="#7c4dff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </label>
+    </div>
+
+    <h2 class="profile-name">MARIA SOCORRO</h2>
+    <p class="profile-address">PRÉDIO FIM DA VIDA<br>BLOCO A - APT 03</p>
+</div>
+
+            <!-- Formulário de Edição -->
+            <form class="profile-form">
+                
+                
+                <div class="input-group">
+                    <label for="nome">Nome completo:</label>
+                    <input type="text" id="nome" value="Maria do Perpetuo Socorro" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="telefone">Telefone:</label>
+                    <input type="tel" id="telefone" value="(xx)x.xxxx-xxxx" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="data-nascimento">Data de nascimento:</label>
+                    <input type="date" id="data-nascimento" required>
+                </div>
+
+                <!-- Botões de ação -->
+                <div class="profile-actions">
+                    <button type="button" class="btn-redefinir">Redefinir senha</button>
+                    <button type="submit" class="btn-entrar">SALVAR</button>
+                </div>
+
+            </form>
+
+            <button class="btn-excluir">EXCLUIR CONTA</button>
+
+        </div>
+
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

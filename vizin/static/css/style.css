@@ -1,0 +1,521 @@
+/* 1. RESET E VARIÁVEIS GERAIS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --roxo-vizin: #8b5cf6; /* A cor principal */
+    --roxo-hover: #7c3aed; /* Um roxo um pouquinho mais escuro para os botões */
+    --cinza-fundo: #f3f4f6; /* Fundo da tela do monitor */
+    --cinza-input: #e5e7eb; /* Fundo dos campos de digitar */
+    --azul-link: #1d4ed8;
+}
+
+/* 2. O FUNDO DA TELA */
+.login-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--cinza-fundo);
+    
+    /* Centralizar o cartão */
+    display: flex;
+    justify-content: center; /* Centraliza na horizontal */
+    align-items: center; /* Centraliza na vertical */
+}
+
+/* 3. O CARTÃO DE LOGIN */
+.login-card {
+    background-color: white;
+    width: 100%;
+    max-width: 450px;
+    padding: 50px 40px;
+    border-radius: 16px; /* Bordas arredondadas */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 4. A LOGO DO VIZIN */
+.logo-vizin {
+    width: 100%;
+    max-width: 150px; /* Define um tamanho máximo */
+    height: auto; /* Mantém a proporção original da imagem */
+    margin-bottom: 40px; /* Espaçamento entre o logo e os campos */
+    display: block; /* Centraliza caso necessário */
+    border-radius: 50%; /* Logo circular */
+}
+
+/* 5. FORMULÁRIO E CAMPOS DE TEXTO */
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.input-group input {
+    padding: 14px;
+    border: 2px solid var(--roxo-vizin);
+    border-radius: 10px;
+    background-color: var(--cinza-input);
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Efeito quando o usuário clica no input */
+.input-group input:focus {
+    border-color: var(--roxo-hover);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+/* 6. LINK E BOTÃO */
+.link-senha {
+    color: var(--azul-link);
+    text-decoration: none;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 35px;
+    font-weight: 600;
+}
+
+.link-senha:hover {
+    text-decoration: underline;
+}
+
+.btn-entrar {
+    padding: 16px;
+    background-color: var(--roxo-vizin);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Efeito de hover e click no botão */
+.btn-entrar:hover {
+    background-color: var(--roxo-hover);
+}
+
+.btn-entrar:active {
+    transform: scale(0.98); /* Efeito no botão ao clicar */
+}
+
+
+
+/* TELA DE PERFIL */
+
+/* 7. ESTRUTURA GERAL DO PERFIL */
+.page-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--cinza-fundo);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Margem para telas menores */
+}
+
+.profile-card {
+    background-color: white;
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* 8. CABEÇALHO DO PERFIL */
+.profile-header {
+    background-color: #e5e5e5;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: white;
+    padding: 4px; /* Borda branca ao redor da foto */
+    margin-bottom: 0px;
+}
+
+
+/* O CONTAINER */
+.avatar-container {
+    position: relative; 
+    display: inline-block; /* Container se ajusta ao tamanho da foto */
+    margin-bottom: 15px; 
+}
+
+/* O ÍCONE */
+.change-avatar-label {
+    position: absolute; 
+    bottom: 0; 
+    right: 0; 
+    background-color: white; 
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra para dar destaque */
+    transition: all 0.3s ease; /* Animação */
+}
+
+/* Efeito de hover */
+.change-avatar-label:hover {
+    background-color: #f0f0f0; 
+    transform: scale(1.1); 
+}
+
+/* Tamanho e cor do SVG dentro do ícone */
+.change-avatar-label svg {
+    width: 16px;
+    height: 16px;
+}
+
+.profile-name {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 800;
+}
+
+.profile-address {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+/* 9. FORMULÁRIO DO PERFIL */
+.profile-form {
+    background-color: #e5e5e5;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+}
+
+
+.profile-form .input-group input {
+    background-color: #b39ddb; 
+    border: none; 
+    color: #111111;
+}
+
+.profile-form .input-group input:focus {
+    background-color: white;
+    border: 2px solid var(--roxo-vizin);
+}
+
+.profile-form .input-group label {
+    color: #333333; 
+    font-weight: 700;
+}
+
+/* 10. BOTÕES ESPECÍFICOS */
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaçamento entre os dois botões */
+    margin-top: 20px;
+}
+
+.btn-redefinir {
+    padding: 16px;
+    background-color: var(--roxo-vizin);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-redefinir:hover {
+    background-color: var(--roxo-hover);
+}
+
+.btn-excluir {
+    width: 100%;
+    padding: 16px;
+    background-color: #e5e5e5;
+    color: #d32f2f;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir:hover {
+    background-color: #d6d6d6;
+}
+
+
+/* TELA DE PUBLICAÇÕES */
+
+/* Container principal */
+.feed-container {
+    background-color: white;
+    width: 100%;
+    max-width: 450px;
+    height: 100vh; 
+    max-height: 850px; /* Limite */
+    position: relative; /* Importante para fixar a barra inferior depois */
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+}
+
+/* 11. CABEÇALHO */
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f3e8ff;
+    padding: 10px 20px;
+    border-radius: 30px; 
+    margin: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.user-mini-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mini-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 11px;
+    font-weight: 800;
+    color: #333;
+}
+
+.user-address {
+    font-size: 9px;
+    color: #666;
+    line-height: 1.2;
+}
+
+.header-logo {
+    font-size: 14px;
+    font-weight: 800;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+/* 12. TÍTULO DA SEÇÃO */
+.section-title {
+    background-color: var(--roxo-vizin);
+    margin: 0 15px 15px 15px;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.section-title h2 {
+    color: #222;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* 13. ÁREA DE ROLAGEM DOS POSTS */
+.posts-scroll-area {
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 0 15px 80px 15px;
+}
+
+/* 14. CARTÕES DE PUBLICAÇÃO */
+.post-card {
+    background-color: #b39ddb; 
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 15px;
+    color: #222;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.post-author-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.author-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: #e5e7eb;
+    border-radius: 50%;
+}
+
+.author-name {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.author-role {
+    font-size: 11px;
+    color: #444;
+}
+
+.post-date {
+    font-size: 11px;
+    color: #444;
+}
+
+.post-body {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 15px;
+}
+
+/* 15. FORMULÁRIO DE ENQUETE */
+.poll-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+    padding-left: 5px;
+}
+
+.poll-option {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* 16. RODAPÉ DO POST (Likes e Comentários) */
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.post-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.btn-action svg {
+    width: 18px;
+    height: 18px;
+} 
+
+.btn-action:hover {
+    transform: scale(1.15); /* Efeito ao passar o mouse */
+    color: var(--roxo-vizin);
+}
+
+
+
+/* 17. BARRA DE NAVEGAÇÃO INFERIOR */
+.bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--roxo-vizin);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 5px;
+    z-index: 10;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: #222;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.6; 
+    transition: all 0.3s ease;
+}
+
+/* Tamanho e cor dos ícones SVG */
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.nav-item.active, .nav-item:hover {
+    opacity: 1;
+    font-weight: 800;
+}
