@@ -1,0 +1,40 @@
+{% load static socialaccount %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Login Administrador</title>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
+</head>
+<body class="auth-page">
+  <div class="container">
+    <div class="auth-box card">
+      <h1>Login Administrador</h1>
+
+      {% if form.non_field_errors %}
+        <div style="color:red">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <table>
+            {{ form.as_table }}
+          </table>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Entrar</button>
+        </div>
+      </form>
+
+      <p class="small text-center mt-2">Ou</p>
+      <p class="small text-center"><a href="{% provider_login_url 'google' %}">Entrar com Google</a></p>
+
+      <p class="small text-center mt-2">Ainda não tem conta? <a href="{% url 'administrador:registro' %}">Cadastre-se</a></p>
+    </div>
+  </div>
+</body>
+</html>

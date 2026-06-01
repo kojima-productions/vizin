@@ -1,0 +1,31 @@
+/* components.css — buttons, forms, tables */
+.btn {
+  display: inline-block;
+  padding: .6rem .9rem;
+  border-radius: 8px;
+  background: var(--purple);
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn.secondary { background: var(--black); color: var(--white); }
+.btn.ghost { background: transparent; color: var(--purple); border: 1px solid rgba(109,40,217,0.15); }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.form-group { margin-bottom: .75rem; }
+label { display:block; margin-bottom: .25rem; font-weight:600; color:var(--black); }
+input[type="text"], input[type="email"], input[type="password"], textarea, select {
+  width:100%;
+  padding:.5rem .6rem;
+  border:1px solid #e6e1f8;
+  border-radius:8px;
+  background:#fff;
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: rgba(109,40,217,0.6); box-shadow: 0 0 0 4px rgba(109,40,217,0.08); }
+
+.form-actions { display:flex; gap:.5rem; justify-content:center; margin-top: .75rem; }
+
+.table { width:100%; border-collapse: collapse; margin-top: .5rem; }
+.table th, .table td { padding: .5rem .75rem; border-bottom: 1px solid #eef2f7; text-align: left; }
+.table th { background: #fbfdff; font-weight:600; }
