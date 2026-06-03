@@ -1,4 +1,4 @@
-{% load static %}
+{% load static socialaccount %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -57,9 +57,13 @@
         <button type="submit" class="btn-entrar">CADASTRAR</button>
       </form>
 
+      <p class="small text-center mt-2">Ou</p>
+      <p class="small text-center"><a href="{% provider_login_url 'google' %}">Cadastrar com Google</a></p>
+
       <p class="small text-center mt-2">Já tem conta? <a href="{% url 'administrador:login' %}">Entrar</a></p>
 
     </div>
   </main>
 </body>
 </html>
+
