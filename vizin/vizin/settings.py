@@ -30,7 +30,14 @@ SECRET_KEY = 'django-insecure-!1o9_u44&&mnqol(60=1y4!q05_ffodzpg(bx4(k1r_&swlhil
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+# Permitir origens confiáveis para o CSRF quando acessando via https em dev
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost:8000",
+    "https://127.0.0.1:8000",
+]
+
 
 
 # Application definition
@@ -58,8 +65,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# When using social signup, require explicit completion of extra fields
-SOCIALACCOUNT_AUTO_SIGNUP = False
+# 
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

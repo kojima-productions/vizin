@@ -3,10 +3,40 @@ from django.contrib.auth.models import User
 from .models import Administrador
 
 class AdministradorRegistrationForm(forms.Form):
-    nome = forms.CharField(max_length=150, label='Nome')
-    cpf = forms.CharField(max_length=11, label='CPF')
-    email = forms.EmailField(label='Email')
-    senha = forms.CharField(widget=forms.PasswordInput, label='Senha')
+    nome = forms.CharField(
+        max_length=150,
+        label='Nome',
+        widget=forms.TextInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'Seu nome completo',
+            'id': 'id_nome'
+        })
+    )
+    cpf = forms.CharField(
+        max_length=11,
+        label='CPF',
+        widget=forms.TextInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'Somente números (11 dígitos)',
+            'id': 'id_cpf'
+        })
+    )
+    email = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'seu@email.com',
+            'id': 'id_email'
+        })
+    )
+    senha = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'Senha',
+            'id': 'id_senha'
+        }),
+        label='Senha'
+    )
 
     def clean_cpf(self):
         cpf = self.cleaned_data.get('cpf', '').strip()
@@ -23,5 +53,19 @@ class AdministradorRegistrationForm(forms.Form):
         return email
 
 class AdministradorLoginForm(forms.Form):
-    email = forms.EmailField(label='Email')
-    senha = forms.CharField(widget=forms.PasswordInput, label='Senha')
+    email = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'seu@email.com',
+            'id': 'id_email'
+        })
+    )
+    senha = forms.CharField(
+        label='Senha',
+        widget=forms.PasswordInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'Senha',
+            'id': 'id_senha'
+        })
+    )

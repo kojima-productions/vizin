@@ -1,37 +1,69 @@
-{% load static %}
+{% load static socialaccount %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <title>Cadastro de Administrador</title>
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
-  <link rel="stylesheet" href="{% static 'css/components.css' %}">
-  <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro Administrador</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>.login-card { max-width: 480px; padding: 40px; }</style>
 </head>
-<body class="auth-page">
-  <div class="container">
-    <div class="auth-box card">
-      <h1>Cadastro de Administrador</h1>
+<body>
+  <main class="login-wrapper">
+    <div class="login-card">
+      <img src="{% static 'assets/icon.jpeg' %}" alt="Logo do aplicativo Vizin" class="logo-vizin">
+
+      <h1 style="margin-bottom:20px;">Registro Administrador</h1>
 
       {% if form.non_field_errors %}
-        <div style="color:red">{{ form.non_field_errors }}</div>
+        <div style="color:red; margin-bottom:12px;">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <form method="post" class="auth-form">
+      <form method="post" class="login-form">
         {% csrf_token %}
-        <div class="form-group">
-          <table>
-            {{ form.as_table }}
-          </table>
+
+        <div class="input-group">
+          <label for="id_nome">NOME:</label>
+          {{ form.nome }}
+          {% if form.nome.errors %}
+            <div style="color:red">{{ form.nome.errors }}</div>
+          {% endif %}
         </div>
-        <div class="form-actions">
-          <button class="btn" type="submit">Cadastrar</button>
+
+        <div class="input-group">
+          <label for="id_cpf">CPF:</label>
+          {{ form.cpf }}
+          {% if form.cpf.errors %}
+            <div style="color:red">{{ form.cpf.errors }}</div>
+          {% endif %}
         </div>
+
+        <div class="input-group">
+          <label for="id_email">EMAIL:</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <div style="color:red">{{ form.email.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="input-group">
+          <label for="id_senha">SENHA:</label>
+          {{ form.senha }}
+          {% if form.senha.errors %}
+            <div style="color:red">{{ form.senha.errors }}</div>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn-entrar">CADASTRAR</button>
       </form>
 
+      <p class="small text-center mt-2">Ou</p>
+      <p class="small text-center"><a href="{% provider_login_url 'google' %}">Cadastrar com Google</a></p>
+
       <p class="small text-center mt-2">Já tem conta? <a href="{% url 'administrador:login' %}">Entrar</a></p>
+
     </div>
-  </div>
+  </main>
 </body>
 </html>
+
