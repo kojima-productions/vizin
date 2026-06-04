@@ -3,10 +3,13 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 from .forms import AdministradorRegistrationForm, AdministradorLoginForm
 from .models import Administrador
 from django.contrib.auth.models import User
+from apps.funcionario.models import Funcionario
+from apps.funcionario.forms import FuncionarioForm
 
 
 def registro_administrador(request):
@@ -65,4 +68,47 @@ def painel_adm(request):
     """Painel do Administrador. Exige login e perfil Administrador."""
     if not hasattr(request.user, 'administrador'):
         raise PermissionDenied
-    return render(request, 'administrador/painel.html')
+    return render(request, 'administrador/base.html')
+
+
+# --- Movido das views do app funcionario ---
+@login_required
+def cadastrar_funcionario(request):
+    """Permite que um administrador cadastre um funcionário.
+
+    Mantém o mesmo fluxo original: validação do form, criação de User e Funcionario dentro de uma transação.
+    """
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    form = FuncionarioForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        dados = form.cleaned_data
+        with transaction.atomic():
+            user = User.objects.create_user(
+                username=dados['email'],
+                email=dados['email'],
+                password=dados['senha'],
+                first_name=dados['nome'],
+            )
+            Funcionario.objects.create(
+                user=user,
+                cpf=dados['cpf'],
+                cargo=dados['cargo'],
+                telefone=dados['telefone'],
+                administrador=request.user.administrador,
+            )
+        messages.success(request, 'Funcionário cadastrado com sucesso.')
+        return redirect('administrador:lista_funcionarios')
+
+    return render(request, 'administrador/cadastrar_funcionario.html', {'form': form})
+
+
+@login_required
+def lista_funcionarios(request):
+    """Lista funcionários do administrador logado."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    funcionarios = Funcionario.objects.filter(administrador=request.user.administrador).select_related('user')
+    return render(request, 'administrador/lista_funcionarios.html', {'funcionarios': funcionarios})

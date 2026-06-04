@@ -1,0 +1,39 @@
+{% extends 'administrador/base.html' %}
+{% block title %}Lista de Funcionários - Vizin{% endblock %}
+
+{% block content %}
+  <div class="section-title" style="margin-top:8px;">
+    <h2>Funcionários</h2>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;margin:12px 0;">
+    <a href="{% url 'administrador:cadastrar_funcionario' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Funcionário</a>
+  </div>
+
+  {% if funcionarios.exists %}
+    <div class="posts-scroll-area">
+      {% for f in funcionarios %}
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-author-info">
+              <div class="author-avatar"></div>
+              <div>
+                <div class="author-name">{{ f.user.get_full_name|default:f.user.email }}</div>
+                <div class="author-role">{{ f.cargo }}</div>
+              </div>
+            </div>
+            <div class="post-date">CPF: {{ f.cpf }}</div>
+          </div>
+
+          <div class="post-body">
+            <strong>Email:</strong> {{ f.user.email }}<br>
+            <strong>Telefone:</strong> {{ f.telefone }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="profile-card" style="text-align:center;padding:30px;">Nenhum funcionário cadastrado.</div>
+  {% endif %}
+
+{% endblock %}
