@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lista de Moradores - Vizin</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
+      <div class="user-mini-info" style="display:flex;align-items:center;">
+        <div class="mini-avatar"></div>
+        <div class="user-details">
+          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
+          <div class="user-address">Administrador</div>
+        </div>
+      </div>
+    </div>
+    <div class="header-logo">Vizin</div>
+  </header>
+
+  <main style="display:flex;justify-content:center;">
+    <div style="width:100%;max-width:900px;padding:0 16px;">
+
+      <div class="section-title" style="margin-top:8px;">
+        <h2>Moradores</h2>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin:12px 0;">
+        <a href="{% url 'administrador:cadastrar_morador' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Morador</a>
+      </div>
+
+      {% if moradores.exists %}
+      <div class="posts-scroll-area">
+        {% for m in moradores %}
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-author-info">
+              <div>
+                <div class="author-name">{{ m.user.get_full_name|default:m.user.email }}</div>
+                <div class="author-role">Morador</div>
+              </div>
+            </div>
+            <div class="post-date">CPF: {{ m.cpf }}</div>
+          </div>
+
+          <div class="post-body">
+            <strong>Email:</strong> {{ m.user.email }}<br>
+            <strong>Telefone:</strong> {{ m.telefone }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="profile-card" style="text-align:center;padding:30px;">Nenhum morador cadastrado.</div>
+      {% endif %}
+
+    </div>
+  </main>
+
+</body>
+</html>
