@@ -7,6 +7,10 @@ class AdministradorSocialAdapter(DefaultSocialAccountAdapter):
     Ele espera que o formulário de signup social (signup) forneça 'cpf' em form.cleaned_data.
     """
 
+    def is_auto_signup_allowed(self, request, sociallogin):
+        """Permitir auto signup social com formulário customizado de CPF."""
+        return True
+
     def save_user(self, request, sociallogin, form=None):
         # sociallogin.user is a User instance (unsaved in some flows)
         user = sociallogin.user

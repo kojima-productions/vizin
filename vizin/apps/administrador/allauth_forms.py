@@ -24,13 +24,13 @@ class AdministradorSocialSignupForm(forms.Form):
         self.cleaned_data['cpf'] = cpf
         return cpf
 
-    def save(self, request, user=None):
-        return user
-
-    def try_save(self, request):
+    def save(self, request):
+        """Salvando o user com o adapter customizado."""
         sociallogin = getattr(self, 'sociallogin', None)
         if sociallogin is None:
-            return None, None
+            return None
+        
         from allauth.socialaccount.adapter import get_adapter as get_social_adapter
-        user = get_social_adapter().save_user(request, sociallogin, form=self)
-        return user, None
+        adapter = get_social_adapter()
+        user = adapter.save_user(request, sociallogin, form=self)
+        return user

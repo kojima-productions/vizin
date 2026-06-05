@@ -32,8 +32,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-# Permitir origens confiáveis para o CSRF quando acessando via https em dev
+# Permitir origens confiáveis para o CSRF
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
     "https://localhost:8000",
     "https://127.0.0.1:8000",
 ]
@@ -69,6 +71,10 @@ AUTHENTICATION_BACKENDS = [
 
 # 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Permitir auto signup social sem confirmação de email em dev
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
