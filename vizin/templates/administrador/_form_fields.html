@@ -1,0 +1,8 @@
+{# Partial to render a single field with label and errors #}
+<div class="input-group">
+  <label for="{{ field.auto_id }}">{{ field.label }}</label>
+  {{ field }}
+  {% if field.errors %}
+    <div style="color:#d32f2f;font-size:13px;margin-top:6px;">{{ field.errors|striptags }}</div>
+  {% endif %}
+</div>
