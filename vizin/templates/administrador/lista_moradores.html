@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lista de Funcionários - Vizin</title>
+  <title>Lista de Moradores - Vizin</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -26,36 +26,36 @@
     <div style="width:100%;max-width:900px;padding:0 16px;">
 
       <div class="section-title" style="margin-top:8px;">
-        <h2>Funcionários</h2>
+        <h2>Moradores</h2>
       </div>
 
       <div style="display:flex;justify-content:flex-end;margin:12px 0;">
-        <a href="{% url 'administrador:cadastrar_funcionario' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Funcionário</a>
+        <a href="{% url 'administrador:cadastrar_morador' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Morador</a>
       </div>
 
-      {% if funcionarios.exists %}
+      {% if moradores.exists %}
       <div class="posts-scroll-area">
-        {% for f in funcionarios %}
+        {% for m in moradores %}
         <div class="post-card">
           <div class="post-header">
             <div class="post-author-info">
               <div>
-                <div class="author-name">{{ f.user.get_full_name|default:f.user.email }}</div>
-                <div class="author-role">{{ f.cargo }}</div>
+                <div class="author-name">{{ m.user.get_full_name|default:m.user.email }}</div>
+                <div class="author-role">Morador</div>
               </div>
             </div>
-            <div class="post-date">CPF: {{ f.cpf }}</div>
+            <div class="post-date">CPF: {{ m.cpf }}</div>
           </div>
 
           <div class="post-body">
-            <strong>Email:</strong> {{ f.user.email }}<br>
-            <strong>Telefone:</strong> {{ f.telefone }}
+            <strong>Email:</strong> {{ m.user.email }}<br>
+            <strong>Telefone:</strong> {{ m.telefone }}
           </div>
         </div>
         {% endfor %}
       </div>
       {% else %}
-      <div class="profile-card" style="text-align:center;padding:30px;">Nenhum funcionário cadastrado.</div>
+      <div class="profile-card" style="text-align:center;padding:30px;">Nenhum morador cadastrado.</div>
       {% endif %}
 
     </div>
@@ -63,4 +63,3 @@
 
 </body>
 </html>
-

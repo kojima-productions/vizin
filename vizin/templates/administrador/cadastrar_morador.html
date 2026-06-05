@@ -3,8 +3,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lista de Funcionários - Vizin</title>
+  <title>Cadastrar Morador - Vizin</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -24,43 +23,26 @@
 
   <main style="display:flex;justify-content:center;">
     <div style="width:100%;max-width:900px;padding:0 16px;">
-
-      <div class="section-title" style="margin-top:8px;">
-        <h2>Funcionários</h2>
-      </div>
-
-      <div style="display:flex;justify-content:flex-end;margin:12px 0;">
-        <a href="{% url 'administrador:cadastrar_funcionario' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Funcionário</a>
-      </div>
-
-      {% if funcionarios.exists %}
-      <div class="posts-scroll-area">
-        {% for f in funcionarios %}
-        <div class="post-card">
-          <div class="post-header">
-            <div class="post-author-info">
-              <div>
-                <div class="author-name">{{ f.user.get_full_name|default:f.user.email }}</div>
-                <div class="author-role">{{ f.cargo }}</div>
-              </div>
-            </div>
-            <div class="post-date">CPF: {{ f.cpf }}</div>
-          </div>
-
-          <div class="post-body">
-            <strong>Email:</strong> {{ f.user.email }}<br>
-            <strong>Telefone:</strong> {{ f.telefone }}
-          </div>
+      <div class="dashboard-container" style="margin:24px auto;">
+        <div class="dashboard-welcome">
+          <h1>Cadastrar Morador</h1>
+          <p>Preencha os dados do novo morador abaixo.</p>
         </div>
-        {% endfor %}
-      </div>
-      {% else %}
-      <div class="profile-card" style="text-align:center;padding:30px;">Nenhum funcionário cadastrado.</div>
-      {% endif %}
 
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+            {% include 'administrador/_form_fields.html' with field=field %}
+          {% endfor %}
+
+          <div class="profile-actions" style="width:100%;margin-top:12px;">
+            <button type="submit" class="btn-entrar">Salvar</button>
+            <a href="{% url 'administrador:lista_moradores' %}" class="btn-excluir" style="text-decoration:none;display:inline-block;text-align:center;">Cancelar</a>
+          </div>
+        </form>
+      </div>
     </div>
   </main>
 
 </body>
 </html>
-

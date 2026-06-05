@@ -10,6 +10,8 @@ from .models import Administrador
 from django.contrib.auth.models import User
 from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm
+from apps.morador.forms import MoradorForm
+from apps.morador.models import Morador, Apartamento
 
 
 def registro_administrador(request):
@@ -71,7 +73,6 @@ def painel_adm(request):
     return render(request, 'administrador/painel.html')
 
 
-# --- Movido das views do app funcionario ---
 @login_required
 def cadastrar_funcionario(request):
     """Permite que um administrador cadastre um funcionário.
@@ -112,3 +113,56 @@ def lista_funcionarios(request):
         raise PermissionDenied
     funcionarios = Funcionario.objects.filter(administrador=request.user.administrador).select_related('user')
     return render(request, 'administrador/lista_funcionarios.html', {'funcionarios': funcionarios})
+
+
+
+@login_required
+def cadastrar_morador(request):
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    form = MoradorForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        dados = form.cleaned_data
+        bloco = dados.get('bloco')
+        andar = dados.get('andar')
+        numero = dados.get('numero')
+
+        with transaction.atomic():
+            apartamento, created = Apartamento.objects.get_or_create(
+                bloco=bloco,
+                andar=andar,
+                numero=numero,
+            )
+
+            user = User.objects.create_user(
+                username=dados['email'],
+                email=dados['email'],
+                password=dados['senha'],
+                first_name=dados['nome'],
+            )
+
+            Morador.objects.create(
+                user=user,
+                cpf=dados['cpf'],
+                telefone=dados['telefone'],
+                tipo_morador=dados['tipo_morador'],
+                administrador=request.user.administrador,
+                apartamento=apartamento,
+            )
+
+        messages.success(request, 'Morador cadastrado com sucesso.')
+        return redirect('administrador:lista_moradores')
+
+    return render(request, 'administrador/cadastrar_morador.html', {'form': form})
+
+
+@login_required
+def lista_moradores(request):
+    """Lista moradores do administrador logado."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    moradores = Morador.objects.filter(administrador=request.user.administrador).select_related('user', 'apartamento')
+    return render(request, 'administrador/lista_moradores.html', {'moradores': moradores})
+
