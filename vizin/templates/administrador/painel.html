@@ -5,7 +5,6 @@
   <meta charset="utf-8">
   <title>{% block title %}Vizin{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/administrador/painel.css' %}">
 </head>
 <body>
   <header class="feed-header" style="max-width:900px;margin:20px auto;">
@@ -17,13 +16,13 @@
       </div>
     </div>
     <div class="header-logo">Vizin</div>
-    <nav>
-      <a href="{% url 'administrador:lista_funcionarios' %}" class="nav-item" style="color:var(--roxo-vizin);">Funcionários</a>
-    </nav>
   </header>
 
   <main style="display:flex;justify-content:center;">
     <div style="width:100%;max-width:900px;padding:0 16px;">
+      <div class="profile-actions" style="margin-bottom:20px;">
+        <a href="{% url 'administrador:lista_funcionarios' %}" class="btn-redefinir">Funcionários</a>
+      </div>
       {% if messages %}
         <div style="margin-bottom:16px;">
           {% for message in messages %}
@@ -32,7 +31,6 @@
         </div>
       {% endif %}
 
-      {% block content %}{% endblock %}
     </div>
   </main>
 

@@ -68,7 +68,7 @@ def painel_adm(request):
     """Painel do Administrador. Exige login e perfil Administrador."""
     if not hasattr(request.user, 'administrador'):
         raise PermissionDenied
-    return render(request, 'administrador/base.html')
+    return render(request, 'administrador/painel.html')
 
 
 # --- Movido das views do app funcionario ---

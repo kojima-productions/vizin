@@ -111,3 +111,13 @@
   background-color: var(--azul-link);
   color: white;
 }
+
+nav {
+	display: flex;
+}
+
+.nav-item {
+	color: var(--roxo-vizin);
+	padding-right: 10px;
+	padding-left: 10px;
+}
