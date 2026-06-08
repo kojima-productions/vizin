@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Morador</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+  .login-card { max-width: 480px; padding: 40px; }
+  </style>
+</head>
+<body>
+
+  <main class="login-wrapper">
+    <div class="login-card">
+      <img src="{% static 'assets/icon.jpeg' %}" alt="Logo do aplicativo Vizin" class="logo-vizin">
+
+      <h1 style="margin-bottom:20px;">Login Morador</h1>
+
+      {% if form.non_field_errors %}
+        <div style="color:red; margin-bottom:12px;">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form method="post" class="login-form">
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label for="id_login">LOGIN:</label>
+          {{ form.login }}
+          {% if form.login.errors %}
+            <div style="color:red">{{ form.login.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="input-group">
+          <label for="id_senha">SENHA:</label>
+          {{ form.senha }}
+          {% if form.senha.errors %}
+            <div style="color:red">{{ form.senha.errors }}</div>
+          {% endif %}
+        </div>
+
+        <a href="#" class="link-senha">ESQUECI MINHA SENHA</a>
+
+        <button type="submit" class="btn-entrar">ENTRAR</button>
+      </form>
+
+    </div>
+  </main>
+
+</body>
+</html>

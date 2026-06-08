@@ -47,3 +47,22 @@ class FuncionarioForm(forms.Form):
         if User.objects.filter(email__iexact=email).exists():
             raise ValidationError('E-mail já cadastrado.')
         return email.lower()
+
+
+class FuncionarioLoginForm(forms.Form):
+    login = forms.EmailField(
+        label='Login',
+        widget=forms.EmailInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'seu@email.com',
+            'id': 'id_login'
+        })
+    )
+    senha = forms.CharField(
+        label='Senha',
+        widget=forms.PasswordInput(attrs={
+            'class': 'input-field',
+            'placeholder': 'Senha',
+            'id': 'id_senha'
+        })
+    )
