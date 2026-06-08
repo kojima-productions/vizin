@@ -6,7 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Registro Administrador</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <style>.login-card { max-width: 480px; padding: 40px; }</style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Substitua CLIENT_ID no servidor se usar o fluxo direto do Google Identity Services -->
+  <style>
+  .login-card { max-width: 480px; padding: 40px; }
+  .google-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #dadce0;
+    background: #fff;
+    color: rgba(0,0,0,0.87);
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .google-btn img { display:inline-block; width:18px; height:18px; }
+  </style>
 </head>
 <body>
   <main class="login-wrapper">
@@ -58,7 +76,12 @@
       </form>
 
       <p class="small text-center mt-2">Ou</p>
-      <p class="small text-center"><a href="{% provider_login_url 'google' %}">Cadastrar com Google</a></p>
+      <p class="small text-center mt-2">
+        <a href="{% provider_login_url 'google' %}" class="google-btn" role="button" aria-label="Cadastrar com Google">
+          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
+          <span>Cadastrar com Google</span>
+        </a>
+      </p>
 
       <p class="small text-center mt-2">Já tem conta? <a href="{% url 'administrador:login' %}">Entrar</a></p>
 

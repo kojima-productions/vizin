@@ -67,7 +67,10 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# 
+# Faz com que o cadastro não seja finalizado sem os dados adicionais necessários   
+SOCIALACCOUNT_AUTO_SIGNUP = False
+
+# Permite pular a tela de confirmação em 'accounts/google/login/'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 SOCIALACCOUNT_PROVIDERS = {
