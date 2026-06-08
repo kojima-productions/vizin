@@ -11,7 +11,7 @@ from .models import Administrador
 from django.contrib.auth.models import User
 from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm
-from apps.morador.forms import MoradorForm
+from apps.morador.forms import MoradorForm, MoradorEditForm
 from apps.morador.models import Morador, Apartamento
 
 
@@ -157,6 +157,61 @@ def cadastrar_morador(request):
         return redirect('administrador:lista_moradores')
 
     return render(request, 'administrador/cadastrar_morador.html', {'form': form})
+
+
+@login_required
+def editar_morador(request, id):
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    morador = get_object_or_404(Morador, id=id, administrador=request.user.administrador)
+    
+    if request.method == 'POST':
+        form = MoradorEditForm(request.POST, morador_id=id)
+        if form.is_valid():
+            dados = form.cleaned_data
+            
+            with transaction.atomic():
+                # Atualizar Apartamento
+                apartamento, created = Apartamento.objects.get_or_create(
+                    bloco=dados['bloco'],
+                    andar=dados['andar'],
+                    numero=dados['numero'],
+                )
+                
+                # Atualizar User
+                user = morador.user
+                user.username = dados['email']
+                user.email = dados['email']
+                user.first_name = dados['nome']
+                if dados.get('senha'):
+                    user.set_password(dados['senha'])
+                user.save()
+                
+                # Atualizar Morador
+                morador.cpf = dados['cpf']
+                morador.telefone = dados['telefone']
+                morador.tipo_morador = dados['tipo_morador']
+                morador.apartamento = apartamento
+                morador.save()
+                
+            messages.success(request, 'Dados do morador atualizados com sucesso.')
+            return redirect('administrador:lista_moradores')
+    else:
+        # Preencher formulário com dados atuais
+        initial_data = {
+            'nome': morador.user.first_name,
+            'email': morador.user.email,
+            'cpf': morador.cpf,
+            'telefone': morador.telefone,
+            'tipo_morador': morador.tipo_morador,
+            'bloco': morador.apartamento.bloco,
+            'andar': morador.apartamento.andar,
+            'numero': morador.apartamento.numero,
+        }
+        form = MoradorEditForm(initial=initial_data, morador_id=id)
+
+    return render(request, 'administrador/editar_morador.html', {'form': form, 'morador': morador})
 
 
 @login_required
