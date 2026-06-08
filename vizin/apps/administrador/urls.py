@@ -11,6 +11,7 @@ urlpatterns = [
     # Rotas para gerenciamento de funcionários (migradas do app funcionario)
     path('funcionarios/', views.lista_funcionarios, name='lista_funcionarios'),
     path('funcionarios/novo/', views.cadastrar_funcionario, name='cadastrar_funcionario'),
+    path('funcionarios/<int:id>/deletar/', views.deletar_funcionario, name='deletar_funcionario'),
 
     # Rotas para gerenciamento de moradores
     path('moradores/', views.lista_moradores, name='lista_moradores'),

@@ -187,3 +187,23 @@ def deletar_morador(request, id):
 
     return JsonResponse({'ok': True})
 
+
+@login_required
+def deletar_funcionario(request, id):
+    """Deleta um funcionário pertencente ao administrador logado. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    funcionario = get_object_or_404(Funcionario, id=id, administrador=request.user.administrador)
+
+    # Proteção: não permitir que o administrador delete o próprio usuário
+    if funcionario.user == request.user:
+        return JsonResponse({'error': 'Não é possível deletar o próprio usuário.'}, status=400)
+
+    # Deletar o User associado — modelos provavelmente configurados para cascade
+    funcionario.user.delete()
+
+    return JsonResponse({'ok': True})
+
