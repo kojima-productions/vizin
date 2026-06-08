@@ -5,6 +5,7 @@ import re
 
 from apps.funcionario.models import Funcionario
 from apps.administrador.models import Administrador
+from apps.morador.models import Morador
 
 
 class FuncionarioForm(forms.Form):
