@@ -5,6 +5,7 @@ import re
 
 from apps.funcionario.models import Funcionario
 from apps.administrador.models import Administrador
+from apps.morador.models import Morador
 
 
 class FuncionarioForm(forms.Form):
@@ -23,10 +24,8 @@ class FuncionarioForm(forms.Form):
         cpf = self._only_digits(cpf_raw)
         if not cpf:
             raise ValidationError('CPF é obrigatório.')
-        if not cpf.isdigit():
-            raise ValidationError('CPF deve conter apenas números.')
         if len(cpf) != 11:
-            raise ValidationError('CPF deve ter exatamente 11 dígitos.')
+            raise ValidationError('CPF deve ter exatamente 11 dígitos numéricos.')
         if Funcionario.objects.filter(cpf=cpf).exists() or Administrador.objects.filter(cpf=cpf).exists():
             raise ValidationError('CPF já cadastrado.')
         return cpf
@@ -36,10 +35,8 @@ class FuncionarioForm(forms.Form):
         tel = self._only_digits(tel_raw)
         if not tel:
             raise ValidationError('Telefone é obrigatório.')
-        if not tel.isdigit():
-            raise ValidationError('Telefone deve conter apenas números.')
         if len(tel) < 10 or len(tel) > 11:
-            raise ValidationError('Telefone deve ter 10 ou 11 dígitos (incluindo DDD).')
+            raise ValidationError('Telefone deve ter entre 10 e 11 dígitos numéricos.')
         return tel
 
     def clean_email(self):
@@ -47,6 +44,55 @@ class FuncionarioForm(forms.Form):
         if User.objects.filter(email__iexact=email).exists():
             raise ValidationError('E-mail já cadastrado.')
         return email.lower()
+
+
+class FuncionarioEditForm(forms.Form):
+    nome = forms.CharField(max_length=100, required=True)
+    cpf = forms.CharField(max_length=14, required=True, label='CPF')
+    email = forms.EmailField(required=True)
+    telefone = forms.CharField(max_length=15, required=True)
+    cargo = forms.CharField(max_length=100, required=True)
+    senha = forms.CharField(min_length=8, widget=forms.PasswordInput, required=False, help_text="Deixe em branco para não alterar.")
+
+    def __init__(self, *args, **kwargs):
+        self.funcionario_id = kwargs.pop('funcionario_id', None)
+        super().__init__(*args, **kwargs)
+
+    def _only_digits(self, value):
+        return re.sub(r"\D", "", value or "")
+
+    def clean_cpf(self):
+        cpf_raw = self.cleaned_data.get('cpf') or ''
+        cpf = self._only_digits(cpf_raw)
+        if not cpf:
+            raise ValidationError('CPF é obrigatório.')
+        
+        if len(cpf) != 11:
+            raise ValidationError('CPF deve ter exatamente 11 dígitos numéricos.')
+
+        # Verifica se o CPF pertence a outro usuário
+        if Funcionario.objects.filter(cpf=cpf).exclude(id=self.funcionario_id).exists() or \
+           Morador.objects.filter(cpf=cpf).exists() or \
+           Administrador.objects.filter(cpf=cpf).exists():
+            raise ValidationError('CPF já cadastrado.')
+        return cpf
+
+    def clean_telefone(self):
+        tel_raw = self.cleaned_data.get('telefone') or ''
+        tel = self._only_digits(tel_raw)
+        if not tel:
+            raise ValidationError('Telefone é obrigatório.')
+        if len(tel) < 10 or len(tel) > 11:
+            raise ValidationError('Telefone deve ter entre 10 e 11 dígitos numéricos.')
+        return tel
+
+    def clean_email(self):
+        email = (self.cleaned_data.get('email') or '').strip().lower()
+        # Verifica se o email pertence a outro User
+        funcionario = Funcionario.objects.get(id=self.funcionario_id)
+        if User.objects.filter(email__iexact=email).exclude(id=funcionario.user.id).exists():
+            raise ValidationError('E-mail já cadastrado.')
+        return email
 
 
 class FuncionarioLoginForm(forms.Form):
