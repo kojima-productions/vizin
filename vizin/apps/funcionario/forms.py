@@ -23,10 +23,8 @@ class FuncionarioForm(forms.Form):
         cpf = self._only_digits(cpf_raw)
         if not cpf:
             raise ValidationError('CPF é obrigatório.')
-        if not cpf.isdigit():
-            raise ValidationError('CPF deve conter apenas números.')
         if len(cpf) != 11:
-            raise ValidationError('CPF deve ter exatamente 11 dígitos.')
+            raise ValidationError('CPF deve ter exatamente 11 dígitos numéricos.')
         if Funcionario.objects.filter(cpf=cpf).exists() or Administrador.objects.filter(cpf=cpf).exists():
             raise ValidationError('CPF já cadastrado.')
         return cpf
@@ -36,10 +34,8 @@ class FuncionarioForm(forms.Form):
         tel = self._only_digits(tel_raw)
         if not tel:
             raise ValidationError('Telefone é obrigatório.')
-        if not tel.isdigit():
-            raise ValidationError('Telefone deve conter apenas números.')
         if len(tel) < 10 or len(tel) > 11:
-            raise ValidationError('Telefone deve ter 10 ou 11 dígitos (incluindo DDD).')
+            raise ValidationError('Telefone deve ter entre 10 e 11 dígitos numéricos.')
         return tel
 
     def clean_email(self):
