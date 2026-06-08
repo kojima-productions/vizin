@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
 
 from .forms import AdministradorRegistrationForm, AdministradorLoginForm
 from .models import Administrador
@@ -165,4 +166,24 @@ def lista_moradores(request):
         raise PermissionDenied
     moradores = Morador.objects.filter(administrador=request.user.administrador).select_related('user', 'apartamento')
     return render(request, 'administrador/lista_moradores.html', {'moradores': moradores})
+
+
+@login_required
+def deletar_morador(request, id):
+    """Deleta um morador pertencente ao administrador logado. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    morador = get_object_or_404(Morador, id=id, administrador=request.user.administrador)
+
+    # Proteção: não permitir que o administrador delete o próprio usuário
+    if morador.user == request.user:
+        return JsonResponse({'error': 'Não é possível deletar o próprio usuário.'}, status=400)
+
+    # Deletar o User associado — modelos provavelmente configurados para cascade
+    morador.user.delete()
+
+    return JsonResponse({'ok': True})
 
