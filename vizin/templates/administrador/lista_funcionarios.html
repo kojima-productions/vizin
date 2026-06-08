@@ -64,10 +64,29 @@
     </div>
   </main>
 
-</body>
-</html>
-
-le(1.05);
+  <style>
+    /* Estilos para o botão de deletar no card */
+    .post-card { position: relative; }
+    .btn-delete-card {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d32f2f;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .btn-delete-card:hover {
+      background: #fff5f5;
+      transform: scale(1.05);
       border-color: #feb2b2;
     }
 
@@ -172,4 +191,3 @@ le(1.05);
   </script>
 </body>
 </html>
-
