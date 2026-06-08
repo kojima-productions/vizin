@@ -10,7 +10,7 @@ from .forms import AdministradorRegistrationForm, AdministradorLoginForm
 from .models import Administrador
 from django.contrib.auth.models import User
 from apps.funcionario.models import Funcionario
-from apps.funcionario.forms import FuncionarioForm
+from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
 from apps.morador.forms import MoradorForm, MoradorEditForm
 from apps.morador.models import Morador, Apartamento
 
@@ -105,6 +105,50 @@ def cadastrar_funcionario(request):
         return redirect('administrador:lista_funcionarios')
 
     return render(request, 'administrador/cadastrar_funcionario.html', {'form': form})
+
+
+@login_required
+def editar_funcionario(request, id):
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    funcionario = get_object_or_404(Funcionario, id=id, administrador=request.user.administrador)
+    
+    if request.method == 'POST':
+        form = FuncionarioEditForm(request.POST, funcionario_id=id)
+        if form.is_valid():
+            dados = form.cleaned_data
+            
+            with transaction.atomic():
+                # Atualizar User
+                user = funcionario.user
+                user.username = dados['email']
+                user.email = dados['email']
+                user.first_name = dados['nome']
+                if dados.get('senha'):
+                    user.set_password(dados['senha'])
+                user.save()
+                
+                # Atualizar Funcionario
+                funcionario.cpf = dados['cpf']
+                funcionario.telefone = dados['telefone']
+                funcionario.cargo = dados['cargo']
+                funcionario.save()
+                
+            messages.success(request, 'Dados do funcionário atualizados com sucesso.')
+            return redirect('administrador:lista_funcionarios')
+    else:
+        # Preencher formulário com dados atuais
+        initial_data = {
+            'nome': funcionario.user.first_name,
+            'email': funcionario.user.email,
+            'cpf': funcionario.cpf,
+            'telefone': funcionario.telefone,
+            'cargo': funcionario.cargo,
+        }
+        form = FuncionarioEditForm(initial=initial_data, funcionario_id=id)
+
+    return render(request, 'administrador/editar_funcionario.html', {'form': form, 'funcionario': funcionario})
 
 
 @login_required
