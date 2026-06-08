@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Vizin - Painel do Funcionário{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="feed-header" style="max-width:900px;margin:20px auto;">
+    <a href="/funcionario/painel" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
+      <div class="mini-avatar"></div>
+      <div class="user-details">
+        <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
+        <div class="user-address">Funcionário</div>
+      </div>
+    </a>
+    <div class="header-logo">Vizin</div>
+  </header>
+
+  <main style="display:flex;justify-content:center;">
+    <div style="width:100%;max-width:900px;padding:0 16px;">
+      <div class="profile-actions" style="margin-bottom:20px;">
+        <!-- Espaço para ações do funcionário (ex.: tarefas, chamados) -->
+      </div>
+
+      {% if messages %}
+        <div style="margin-bottom:16px;">
+          {% for message in messages %}
+            <div class="post-card" style="background:#eaf3ff;color:#063;">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <section>
+        <h2>Bem-vindo {{ request.user.get_full_name|default:request.user.email }}</h2>
+        <p>Este é o painel do funcionário. Adicione aqui os widgets e links relevantes.</p>
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>
