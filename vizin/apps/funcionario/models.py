@@ -12,7 +12,7 @@ class Funcionario(models.Model):
     administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='funcionarios')
 
     def __str__(self):
-        return f"Funcionário: {self.user.get_full_name() or self.user.email}"
+        return f"Funcionario: {self.user.get_full_name() or self.user.email}"
 
     class Meta:
         db_table = "funcionario"
