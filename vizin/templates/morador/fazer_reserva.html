@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Reservar {{ area.nome }} - Vizin</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
+      <a href="{% url 'morador:painel' %}" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
+        <div class="mini-avatar"></div>
+        <div class="user-details">
+          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
+          <div class="user-address">Morador</div>
+        </div>
+      </a>
+    </div>
+    <div class="header-logo">Vizin</div>
+  </header>
+
+  <main style="display:flex;justify-content:center;">
+    <div style="width:100%;max-width:900px;padding:0 16px;">
+      <div class="dashboard-container" style="margin:24px auto;">
+        <div class="dashboard-welcome">
+          <h1>Reservar {{ area.nome }}</h1>
+          <p>Confira as regras e preencha os horários desejados.</p>
+        </div>
+        
+        <div class="post-card" style="margin-bottom: 24px; background: #f9f9f9;">
+            <strong>Regras da Área:</strong>
+            <p style="white-space: pre-wrap; font-size: 14px; color: #555;">{{ area.regras }}</p>
+            <p style="margin-top: 10px;"><strong>Taxa de Reserva:</strong> R$ {{ area.taxa_reserva|stringformat:".2f" }}</p>
+        </div>
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group" style="margin-bottom:16px;">
+                <label for="{{ field.id_for_label }}" style="display:block; margin-bottom:4px; font-weight:bold;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div style="color: #d32f2f; font-size: 12px; margin-top: 4px;">
+                        {{ field.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+          {% endfor %}
+          
+          {% if form.non_field_errors %}
+            <div style="color: #d32f2f; font-size: 14px; margin-bottom: 16px; padding: 10px; background: #fff5f5; border-radius: 8px;">
+                {{ form.non_field_errors.0 }}
+            </div>
+          {% endif %}
+
+          <div class="profile-actions" style="width:100%;margin-top:12px;">
+            <button type="submit" class="btn-entrar">Confirmar Reserva</button>
+            <a href="{% url 'morador:lista_areas_comuns' %}" class="btn-excluir" style="text-decoration:none;display:inline-block;text-align:center;">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

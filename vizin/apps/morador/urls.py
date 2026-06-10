@@ -6,4 +6,10 @@ app_name = 'morador'
 urlpatterns = [
     path('login/', views.login_morador, name='login'),
     path('painel/', views.painel_morador, name='painel'),
+    
+    # Rotas para reserva de áreas
+    path('areas/', views.lista_areas_comuns, name='lista_areas_comuns'),
+    path('areas/<int:area_id>/reservar/', views.fazer_reserva, name='fazer_reserva'),
+    path('minhas-reservas/', views.minhas_reservas, name='minhas_reservas'),
+    path('reservas/<int:reserva_id>/cancelar/', views.cancelar_reserva, name='cancelar_reserva'),
 ]
