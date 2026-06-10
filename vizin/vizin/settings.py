@@ -43,6 +43,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'apps.area',
     'apps.morador',
     'apps.funcionario',
     'apps.administrador',

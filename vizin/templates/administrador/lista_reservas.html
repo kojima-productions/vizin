@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerenciar Reservas - Vizin</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
+      <a href="{% url 'administrador:painel' %}" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
+        <div class="mini-avatar"></div>
+        <div class="user-details">
+          <div class="user-name"><span class="admin-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/></svg></span>{{ request.user.get_full_name|default:request.user.email }}</div>
+          <div class="user-address">Administrador</div>
+        </div>
+      </a>
+    </div>
+    <div class="header-logo">Vizin</div>
+  </header>
+
+  <main style="display:flex;justify-content:center;">
+    <div style="width:100%;max-width:900px;padding:0 16px;">
+
+      <div class="section-title" style="margin-top:8px;">
+        <h2>Solicitações de Reserva</h2>
+      </div>
+
+      <div class="filter-bar" style="margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <a href="?status=" class="filter-chip {% if not request.GET.status %}active{% endif %}">Todas</a>
+        <a href="?status=aberto" class="filter-chip {% if request.GET.status == 'aberto' %}active{% endif %}">Pendentes</a>
+        <a href="?status=aprovado" class="filter-chip {% if request.GET.status == 'aprovado' %}active{% endif %}">Aprovadas</a>
+        <a href="?status=negado" class="filter-chip {% if request.GET.status == 'negado' %}active{% endif %}">Negadas</a>
+      </div>
+
+      {% if reservas %}
+      <div class="posts-scroll-area">
+        {% for r in reservas %}
+        <div class="post-card" id="reserva-card-{{ r.id }}">
+          <div class="post-header">
+            <div class="post-author-info">
+              <div>
+                <div class="author-name">{{ r.morador.user.get_full_name|default:r.morador.user.email }}</div>
+                <div class="author-role">{{ r.area.nome }} - Apto {{ r.morador.apartamento }}</div>
+              </div>
+            </div>
+            <div id="status-badge-{{ r.id }}" class="status-badge status-{{ r.status }}">
+                {{ r.get_status_display }}
+            </div>
+          </div>
+
+          <div class="post-body">
+            <strong>Data/Hora:</strong> {{ r.horario_inicio|date:"d/m/Y H:i" }} até {{ r.horario_fim|date:"d/m/Y H:i" }}<br>
+            <strong>Motivo:</strong> {{ r.motivo }}
+          </div>
+          
+          <div class="post-actions action-container-{{ r.id }}" style="border-top: 1px solid #f0f0f0; padding-top: 12px; margin-top: 12px; display: {% if r.status == 'aberto' %}flex{% else %}none{% endif %}; gap: 12px; justify-content: flex-end;">
+            <button onclick="validarReserva('{{ r.id }}', 'negar')" class="btn-cancel" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer;">Negar</button>
+            <button onclick="validarReserva('{{ r.id }}', 'aprovar')" class="btn-entrar" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer;">Aprovar</button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="profile-card" style="text-align:center;padding:30px;">Nenhuma solicitação de reserva encontrada.</div>
+      {% endif %}
+
+    </div>
+  </main>
+
+  <style>
+    .filter-chip {
+        padding: 6px 16px;
+        border-radius: 20px;
+        background: #f0f0f0;
+        color: #666;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    .filter-chip:hover { background: #e0e0e0; }
+    .filter-chip.active { background: #2563eb; color: #fff; }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .status-aberto { background: #fef3c7; color: #92400e; }
+    .status-aprovado { background: #dcfce7; color: #166534; }
+    .status-negado { background: #fee2e2; color: #991b1b; }
+
+    .btn-cancel { background: #fff; border: 1px solid #d1d5db; color: #374151; }
+    .btn-cancel:hover { background: #f9fafb; }
+  </style>
+
+  <script>
+    function validarReserva(id, acao) {
+      if (!confirm(`Deseja realmente ${acao} esta reserva?`)) return;
+
+      fetch(`/administrador/reservas/${id}/validar/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ acao: acao })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          // Atualiza badge
+          const badge = document.getElementById(`status-badge-${id}`);
+          badge.textContent = data.novo_status;
+          badge.className = `status-badge status-${acao === 'aprovar' ? 'aprovado' : 'negado'}`;
+          
+          // Esconde botões
+          document.querySelector(`.action-container-${id}`).style.display = 'none';
+        } else {
+          alert('Erro ao processar: ' + data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('Ocorreu um erro ao processar a solicitação.');
+      });
+    }
+  </script>
+</body>
+</html>
