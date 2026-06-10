@@ -365,3 +365,50 @@ def deletar_area(request, id):
 
     return JsonResponse({'ok': True})
 
+
+@login_required
+def lista_reservas(request):
+    """Lista todas as solicitações de reserva para o administrador."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    # Filtra reservas das áreas gerenciadas por este administrador
+    reservas = Reserva.objects.filter(administrador=request.user.administrador).order_by('status', 'horario_inicio')
+    
+    # Filtro simples via GET se necessário (ex: ?status=aberto)
+    status_filtro = request.GET.get('status')
+    if status_filtro:
+        reservas = reservas.filter(status=status_filtro)
+
+    return render(request, 'administrador/lista_reservas.html', {
+        'reservas': reservas,
+        'status_choices': Reserva.Status.choices
+    })
+
+
+@login_required
+def validar_reserva(request, reserva_id):
+    """Aprova ou nega uma reserva. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    reserva = get_object_or_404(Reserva, id=reserva_id, administrador=request.user.administrador)
+    
+    # Ação pode ser 'aprovar' ou 'negar'
+    import json
+    data = json.loads(request.body)
+    acao = data.get('acao')
+
+    if acao == 'aprovar':
+        reserva.status = Reserva.Status.APROVADO
+    elif acao == 'negar':
+        reserva.status = Reserva.Status.NEGADO
+    else:
+        return JsonResponse({'error': 'Ação inválida.'}, status=400)
+
+    reserva.save()
+    return JsonResponse({'ok': True, 'novo_status': reserva.get_status_display()})
+

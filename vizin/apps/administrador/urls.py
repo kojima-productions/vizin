@@ -25,4 +25,8 @@ urlpatterns = [
     path('areas/novo/', views.cadastrar_area, name='cadastrar_area'),
     path('areas/<int:id>/editar/', views.editar_area, name='editar_area'),
     path('areas/<int:id>/deletar/', views.deletar_area, name='deletar_area'),
+
+    # Rotas para validação de reservas
+    path('reservas/', views.lista_reservas, name='lista_reservas'),
+    path('reservas/<int:reserva_id>/validar/', views.validar_reserva, name='validar_reserva'),
 ]
