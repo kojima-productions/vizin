@@ -412,3 +412,6 @@ def validar_reserva(request, reserva_id):
     reserva.save()
     return JsonResponse({'ok': True, 'novo_status': reserva.get_status_display()})
 
+
+
+
