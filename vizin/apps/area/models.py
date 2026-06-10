@@ -21,12 +21,16 @@ class Reserva(models.Model):
     horario_fim = models.DateTimeField()
     motivo = models.CharField(max_length=500)
     
-    class Status(models.TextChoice):
-        ABERTO = "aberto"
-        NEGADO = "fechado"
-        APROVADO = "aprovado"
+    class Status(models.TextChoices):
+        ABERTO = "aberto", "Pendente"
+        NEGADO = "negado", "Negado"
+        APROVADO = "aprovado", "Aprovado"
 
-    status = models.CharField(max_length=8, choices=Status.choices)
+    status = models.CharField(
+        max_length=8, 
+        choices=Status.choices, 
+        default=Status.ABERTO
+    )
 
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     morador = models.ForeignKey(Morador, on_delete=models.CASCADE)
