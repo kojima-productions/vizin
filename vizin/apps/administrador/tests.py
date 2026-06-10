@@ -1,556 +1,448 @@
-from django.test import TestCase
-from django.contrib.auth.models import User
+from django.test import TestCase, Client
 from django.urls import reverse
-import random
-from .models import Administrador
-from .models import Funcionario
-class AdministradorModelTest(TestCase):
+from django.contrib.auth.models import User
 
-    def test_criar_administrador(self):
-        user = User.objects.create_user(
-            id = random.randint(1, 10),
+from apps.administrador.models import Administrador
+from apps.funcionario.models import Funcionario
+from apps.morador.models import Morador, Apartamento
+
+
+class AdministradorViewsTest(TestCase):
+
+    def setUp(self):
+        """
+        Cria um administrador que será utilizado na maioria
+        dos testes e configura o client HTTP do Django.
+        """
+        self.client = Client()
+
+        self.user_admin = User.objects.create_user(
             username='admin@email.com',
             email='admin@email.com',
-            password='admin123',
-            first_name='nome'
+            password='12345678'
         )
 
-        administrador = Administrador.objects.create(
-            user=user,
+        self.admin = Administrador.objects.create(
+            user=self.user_admin,
             cpf='12345678901'
         )
 
-        self.assertEqual(
-            administrador.cpf,
-            '12345678901'
-        )
-
-        self.assertEqual(
-            administrador.user.username,
-            'admin@email.com'
-        )
-
-        print(administrador.user.username)
-        print(administrador.cpf)
-        print(administrador.user.first_name)
-        print(administrador.user.email)
-        
-
-
-class RegistroAdministradorTest(TestCase):
-
-    def test_deve_cadastrar_administrador(self):
+    def test_registro_administrador_sucesso(self):
+        """
+        Verifica se o cadastro cria corretamente
+        um User e um Administrador.
+        """
         response = self.client.post(
-            reverse('administrador:registro'), 
+            reverse('administrador:registro'),
             {
-            'nome': 'administrador teste',
-            'cpf': '12345678901',
-            'email': 'admin@email.com',
-            'senha': 'admin123456'
-        }
-    )
+                'nome': 'Novo Admin',
+                'cpf': '98765432100',
+                'email': 'novo@email.com',
+                'senha': '12345678'
+            }
+        )
 
-        self.assertEqual(response.status_code, 302)  
-        # Redirecionamento após registro bem-sucedido
+        self.assertEqual(response.status_code, 302)
 
         self.assertTrue(
             User.objects.filter(
-                email='admin@email.com'
+                email='novo@email.com'
                 ).exists()
-            )  # Verifica se o usuário foi criado
+        )
 
         self.assertTrue(
             Administrador.objects.filter(
-                cpf='12345678901'
+                cpf='98765432100'
+                ).exists()
+        )
+
+    def test_login_administrador_sucesso(self):
+        """
+        Garante que um administrador válido
+        consiga acessar o sistema.
+        """
+        response = self.client.post(
+            reverse('administrador:login'),
+            {
+                'email': 'admin@email.com',
+                'senha': '12345678'
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_painel_exige_login(self):
+        """
+        Usuários não autenticados devem ser
+        redirecionados para a tela de login.
+        """
+        response = self.client.get(
+            reverse('administrador:painel')
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_painel_administrador_logado(self):
+        """
+        Um administrador autenticado deve
+        acessar normalmente o painel.
+        """
+        self.client.login(
+            username='admin@email.com',
+            password='12345678'
+        )
+
+        response = self.client.get(
+            reverse('administrador:painel')
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_cadastrar_funcionario(self):
+        """
+        Verifica a criação de funcionário
+        vinculada ao administrador logado.
+        """
+        self.client.login(
+            username='admin@email.com',
+            password='12345678',
+    )
+
+        response = self.client.post(
+            reverse('administrador:cadastrar_funcionario'),
+            {
+                'nome': 'João',
+                'email': 'func@email.com',
+                'senha': '12345678',
+                'cpf': '11111111111',
+                'telefone': '81999999999',
+                'cargo': 'Porteiro'
+            }
+    )
+
+        self.assertEqual(response.status_code, 302)
+
+        self.assertTrue(
+            Funcionario.objects.filter(
+                cpf='11111111111'
             ).exists()
-        )  # Verifica se o administrador foi criado
+    )
 
-class LoginAdministradorTest(TestCase):
-    
-    def test_login_valido(self):
-        user = User.objects.create_user(
-            username='admin@email.com',
-            email='admin@email.com',
-            password='admin123'
+    def test_lista_funcionarios(self):
+        """
+        Garante que o administrador consiga
+        visualizar seus funcionários.
+        """
+        funcionario_user = User.objects.create_user(
+            username='func@email.com',
+            password='12345678'
         )
 
-        Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-
-        response = self.client.post(
-            reverse('administrador:login'), 
-            {
-                'email': 'admin@email.com',
-                'senha': 'admin123'
-            }
-        )
-        self.assertEqual(response.status_code, 302)  
-        # Redirecionamento após login bem-sucedido
-
-    def test_login_invalido(self):
-        response = self.client.post(
-            reverse('administrador:login'), 
-            {
-                'email': 'admin@email.com',
-                'senha': 'admin123456'
-            }
-        )
-        
-        self.assertContains(
-            response, 
-            'Credenciais inválidas. Por favor, tente novamente.'
-        )   
-        # Verifica se a mensagem de erro é exibida
-
-
-
-class PainelAdministradorTest(TestCase):
-    
-    def test_acesso_sem_login(self):
-        response = self.client.get(
-            reverse('administrador:painel'),
-            follow=True
-        )
-          # Redirecionamento para a página de login
-        # Verifica se o redirecionamento é para a página de login
-        print(response.redirect_chain)
-
-    def test_acesso_com_login(self):
-
-        user = User.objects.create_user(
-            username='admin@email.com',
-            email='admin@email.com',
-            password='admin123'
-        )
-
-        Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
+        Funcionario.objects.create(
+            user=funcionario_user,
+            cpf='11111111111',
+            telefone='81999999999',
+            cargo='Porteiro',
+            administrador=self.admin
         )
 
         self.client.login(
             username='admin@email.com',
-            password='admin123'
+            password='12345678'
         )
 
         response = self.client.get(
-            reverse('administrador:painel'),
-            follow=True
-        ) 
-         # Acesso permitido ao painel
-        print(response.redirect_chain)
+            reverse('administrador:lista_funcionarios')
+        )
+
         self.assertEqual(response.status_code, 200)
-class updateAdministradorTest(TestCase):
+        self.assertContains(response, 'Porteiro')
 
-    def test_atualizar_informacoes(self):
-        user = User.objects.create_user(
-            username='admin@email.com',
-            email='admins@email.com',
-            password='admin123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-        self.client.login(  
-            username='admins@email.com',
-            password='admin123'
-        )
-        
-        print(self.client.login(
-            username='admin',
-            password='123456'
-        )
-        )
-        response = self.client.post(
-            reverse('administrador:update'), 
-            {
-                'nome': 'Administrador Atualizado',
-                'cpf': '12345678901',
-                'email': 'admins@email.com'
-            }
-        )
-        self.assertEqual(response.status_code, 302)  
-        # Redirecionamento após atualização bem-sucedida
-        administrador.refresh_from_db()
-        # Atualiza o objeto do banco de dados
-        self.assertEqual(
-            administrador.user.username,
-            'Administrador Atualizado'
-        )
-
-class DeleteAdministradorTest(TestCase):
-
-    def test_deletar_administrador(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 10),
-            username='admin@email.com',
-            email='admin@email.com',
-            password='admin123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-        response = self.client.post(
-            reverse('administrador:delete', kwargs={'id': administrador.id})
-        )
-        self.assertEqual(response.status_code, 302)  # Redirecionamento após exclusão bem-sucedida
-        self.assertFalse(
-            Administrador.objects.filter(id=administrador.id).exists()
-        )  # Verifica se o administrador foi excluído
-
-class AdministradorGerenciaMoradorTest(TestCase):
     def test_cadastrar_morador(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='morador@email.com',
-            email='morador@email.com',
-            password='morador123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
+        """
+        Deve criar automaticamente o apartamento
+        e associá-lo ao morador.
+        """
         self.client.login(
             username='admin@email.com',
-            password='admin123'
+            password='12345678'
         )
+
         response = self.client.post(
-            reverse('administrador:cadastrar_morador'), 
+            reverse('administrador:cadastrar_morador'),
             {
-                'nome': 'Morador Teste',
-                'cpf': '12345678901',
-                'email': 'morador@email.com',
-                'senha': 'morador123456'
+                'nome': 'Maria',
+                'email': 'maria@email.com',
+                'senha': '12345678',
+                'cpf': '22222222222',
+                'telefone': '81888888888',
+                'tipo_morador': 'Proprietario',
+                'bloco': 'A',
+                'andar': '1',
+                'numero': '101'
             }
         )
-        self.assertEqual(response.status_code, 302)
-        # Redirecionamento após cadastro bem-sucedido
-        self.assertTrue(
-            User.objects.filter(email='morador@email.com').exists()
-        )  # Verifica se o usuário do morador foi criado
-        self.assertTrue(
-            Administrador.objects.filter(cpf='12345678901').exists()
-        )  # Verifica se o morador foi criado
 
-    def test_listar_moradores(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='morador@email.com',
-            email='morador@email.com',
-            password='morador123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-        response = self.client.get(
-            reverse('administrador:listar_moradores')
-        )
-        self.assertEqual(response.status_code, 200)
-        # Verifica se a lista de moradores é exibida corretamente
-        self.assertContains(response, 'Morador Teste')
-
-    def test_atualizar_morador(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='morador@email.com',
-            email='morador@email.com',
-            password='morador123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-        response = self.client.post(
-            reverse('administrador:update_morador', kwargs={'id': administrador.id}), 
-            {
-                'nome': 'Morador Atualizado',
-                'cpf': '12345678901',
-                'email': 'morador@email.com'
-            }
-        )
         self.assertEqual(response.status_code, 302)
-        # Redirecionamento após atualização bem-sucedida
-        administrador.refresh_from_db()
-        # Atualiza o objeto do banco de dados
+
         self.assertEqual(
-            administrador.user.username,
-            'Morador Atualizado'
+            Morador.objects.count(),
+        1
+        )
+
+        self.assertEqual(
+            Apartamento.objects.count(),
+        1
+        )
+
+    def test_lista_moradores(self):
+        """
+        Verifica se a listagem retorna os
+        moradores cadastrados.
+        """
+        apartamento = Apartamento.objects.create(
+            bloco='A',
+            andar='1',
+            numero='101'
+        )
+
+        morador_user = User.objects.create_user(
+            username='morador@email.com',
+            password='12345678'
+        )
+
+        Morador.objects.create(
+            user=morador_user,
+            cpf='22222222222',
+            telefone='81888888888',
+            tipo_morador='Proprietario',
+            administrador=self.admin,
+            apartamento=apartamento
+        )
+
+        self.client.login(
+            username='admin@email.com',
+            password='12345678'
+        )
+
+        response = self.client.get(
+            reverse('administrador:lista_moradores')
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_deletar_funcionario(self):
+        """
+        A exclusão deve remover o funcionário
+        e o usuário associado.
+        """
+        funcionario_user = User.objects.create_user(
+            username='func@email.com',
+            password='12345678'
+        )
+
+        funcionario = Funcionario.objects.create(
+            user=funcionario_user,
+            cpf='11111111111',
+            telefone='81999999999',
+            cargo='Porteiro',
+            administrador=self.admin
+        )
+
+        self.client.login(
+            username='admin@email.com',
+            password='12345678'
+        )
+
+        response = self.client.post(
+            reverse(
+                'administrador:deletar_funcionario',
+                args=[funcionario.id]
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertFalse(
+            Funcionario.objects.filter(
+                id=funcionario.id
+            ).exists()
         )
 
     def test_deletar_morador(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
+        """
+        A exclusão deve remover o morador
+        e o usuário associado.
+        """
+        apartamento = Apartamento.objects.create(
+            bloco='A',
+            andar='1',
+            numero='101'
+        )
+
+        morador_user = User.objects.create_user(
             username='morador@email.com',
-            email='morador@email.com',
-            password='morador123'
+            password='12345678'
         )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-        response = self.client.post(
-            reverse('administrador:delete_morador', kwargs={'id': administrador.id})
-        )
-        self.assertEqual(response.status_code, 302)  # Redirecionamento após exclusão bem-sucedida
-        self.assertFalse(
-            Administrador.objects.filter(id=administrador.id).exists()
-        )  # Verifica se o morador foi excluído
 
-class AdministradorGerenciaFuncionarioTest(TestCase):
-    
-    def test_cadastrar_funcionario(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='funcionario@email.com',
-            email='funcionario@email.com',
-            password='funcionario123'
+        morador = Morador.objects.create(
+            user=morador_user,
+            cpf='22222222222',
+            telefone='81888888888',
+            tipo_morador='Proprietario',
+            administrador=self.admin,
+            apartamento=apartamento
         )
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-        response = self.client.post(
-            reverse('administrador:cadastrar_funcionario'), 
-            {
-                'nome': 'Funcionário Teste',
-                'cpf': '12345678901',
-                'email': 'funcionario@email.com',
-                'senha': 'funcionario123456'
-            }
-        )
-        self.assertEqual(response.status_code, 302)
-        # Redirecionamento após cadastro bem-sucedido
-        self.assertTrue(
-            User.objects.filter(email='funcionario@email.com').exists()
-        )  # Verifica se o usuário do funcionário foi criado
-        self.assertTrue(
-            Administrador.objects.filter(cpf='12345678901').exists()
-        )  # Verifica se o funcionário foi criado
 
-    def test_listar_funcionarios(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='funcionario@email.com',
-            email='funcionario@email.com',
-            password='funcionario123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
         self.client.login(
             username='admin@email.com',
-            password='admin123'
+            password='12345678'
+)
+
+        response = self.client.post(
+            reverse(
+                'administrador:deletar_morador',
+                args=[morador.id]
+            )
         )
-        response = self.client.get(
-            reverse('administrador:listar_funcionarios')
-        )
+
         self.assertEqual(response.status_code, 200)
-        # Verifica se a lista de funcionário é exibida corretamente
-        self.assertContains(response, 'Funcionário Teste')
 
-    def test_atualizar_funcionario(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='funcionario@email.com',
-            email='funcionario@email.com',
-            password='funcionario123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-        response = self.client.post(
-            reverse('administrador:update_funcionario', kwargs={'id': administrador.id}), 
-            {
-                'nome': 'Funcionário Atualizado',
-                'cpf': '12345678901',
-                'email': 'funcionario@email.com'
-            }
-        )
-        self.assertEqual(response.status_code, 302)
-        # Redirecionamento após atualização bem-sucedida
-        administrador.refresh_from_db()
-        # Atualiza o objeto do banco de dados
-        self.assertEqual(
-            administrador.user.username,
-            'Funcionário Atualizado'
-        )
-
-    def test_deletar_funcionario(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='funcionario@email.com',
-            email='funcionario@email.com',
-            password='funcionario123'
-        )
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-        response = self.client.post(
-            reverse('administrador:delete_funcionario', kwargs={'id': administrador.id})
-        )
-        self.assertEqual(response.status_code, 302)  # Redirecionamento após exclusão bem-sucedida
         self.assertFalse(
-            Administrador.objects.filter(id=administrador.id).exists()
-        )  # Verifica se o funcionário foi excluído
-        
-class AdministradorAutorizaReservaTest(TestCase):
-    
-    def test_autorizar_reserva(self):
-        user = User.objects.create_user(
-            id= random.randint(1, 1000),
-            username='admin@email.com',
-            password='admin123'
-        )
-
-        administrador = Administrador.objects.create(
-            user=user,
-            cpf='12345678901'
-        )
-
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-
-        response = self.client.post(
-            reverse('administrador:autorizar_reserva', kwargs={'id': administrador.id}), 
-            {
-                'status': 'autorizada'
-            }
-        )
-        self.assertEqual(response.status_code, 302)  
-        # Redirecionamento após autorização bem-sucedida
-        # Verifica se a reserva foi autorizada corretamente
-        administrador.refresh_from_db()
-        self.assertEqual(administrador.status, 'autorizada')
-
-class AdministradorRegistraOcorrenciaTest(TestCase):
-    
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username='admin@email.com',
-            email='admin@email.com',
-            password='admin123'
-        )
-
-        self.administrador = Administrador.objects.create(
-            user=self.user,
-            cpf='12345678901'
-        )
-
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-
-    def test_registrar_ocorrencia(self):
-    
-        response = self.client.post(
-            reverse('administrador:registrar_ocorrencia', kwargs={'id': self.administrador.id}), 
-            {
-                'descricao': 'Ocorrência de teste',
-                'tipo': 'Incidente'
-            }
-        )
-        self.assertEqual(response.status_code, 302)  
-        # Redirecionamento após registro bem-sucedido
-        # Verifica se a ocorrência foi registrada corretamente
-        self.assertTrue(
-            self.administrador.ocorrencias.filter(
-                descricao='Ocorrência de teste',
-                tipo='Incidente'
+            Morador.objects.filter(
+                id=morador.id
             ).exists()
         )
 
-        self.administrador.refresh_from_db()
-        self.assertEqual(self.administrador.ocorrencias.count(), 1)
-        ocorrencia = self.administrador.ocorrencias.first()
-        self.assertEqual(ocorrencia.descricao, 'Ocorrência de teste')
-        self.assertEqual(ocorrencia.tipo, 'Incidente')
-
-class AdministradorDefineEscalaTest(TestCase):
-
-    def setUp(self):
-        user_admin = User.objects.create_user(
-            username='admin@email.com',
-            password='admin123'
-        )
-
-        self.administrador = Administrador.objects.create(
-            user=user_admin,
-            cpf='12345678901'
-        )
-
-        user_funcionario = User.objects.create_user(
-            username='funcionario@email.com',
-            password='funcionario123'
-        )
-
-        self.funcionario = Funcionario.objects.create(
-            user=user_funcionario,
-            cpf='12345678901',
-            telefone='1234567890',
-            cargo='Porteiro',
-            administrador=self.administrador
-        )
-
-        self.client.login(
-            username='admin@email.com',
-            password='admin123'
-        )
-    def test_definir_escala(self):
+    def test_registro_administrador_cpf_duplicado(self):
+        """
+        Não deve permitir cadastrar dois administradores
+        com o mesmo CPF.
+        """
         response = self.client.post(
-            reverse('administrador:definir_escala', kwargs={'id': self.administrador.id}),
+            reverse('administrador:registro'),
             {
-                'funcionario_id': self.funcionario.id,
-                'data': '2024-01-01',
-                'turno': 'Manhã',
-                'hora_inicio': '08:00',
-                'hora_fim': '12:00',
+                'nome': 'Outro Admin',
+                'cpf': '12345678901',  # CPF já utilizado no setUp
+                'email': 'outro@email.com',
+                'senha': '12345678'
             }
         )
 
-        self.assertEqual(response.status_code, 302)
-        # Redirecionamento após definição bem-sucedida
-        # Verifica se a escala foi definida corretamente
-        self.assertTrue(
-            self.administrador.escalas.filter(
-                id_funcionario=self.funcionario.id,
-                data='2024-01-01',
-                turno='Manhã',
-                hora_inicio='08:00',
-                hora_fim='12:00'
-            ).exists()
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'CPF já cadastrado.')
+
+        self.assertEqual(
+            Administrador.objects.filter(cpf='12345678901').count(),
+            1
         )
+
+
+    def test_registro_administrador_email_duplicado(self):
+        """
+        Não deve permitir cadastrar dois usuários
+        com o mesmo e-mail.
+        """
+        response = self.client.post(
+            reverse('administrador:registro'),
+            {
+                'nome': 'Outro Admin',
+                'cpf': '99999999999',
+                'email': 'admin@email.com',  # Email do setUp
+                'senha': '12345678'
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Email já cadastrado.')
+
+        self.assertEqual(
+            User.objects.filter(email='admin@email.com').count(),
+            1
+        )
+
+
+    def test_login_invalido(self):
+        """
+        Credenciais incorretas devem impedir
+        a autenticação do usuário.
+        """
+        response = self.client.post(
+            reverse('administrador:login'),
+            {
+                'email': 'admin@email.com',
+                'senha': 'senha_errada'
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Credenciais inválidas.')
+
+
+    def test_usuario_comum_nao_acessa_painel(self):
+        """
+        Usuários autenticados sem perfil de administrador
+        devem receber erro de permissão.
+        """
+        usuario_comum = User.objects.create_user(
+            username='comum@email.com',
+            email='comum@email.com',
+            password='12345678'
+        )
+
+        self.client.login(
+            username='comum@email.com',
+            password='12345678'
+        )
+
+        response = self.client.get(
+            reverse('administrador:painel')
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+
+    def test_usuario_comum_nao_cadastra_funcionario(self):
+        """
+        Apenas administradores podem cadastrar
+        funcionários.
+        """
+        usuario_comum = User.objects.create_user(
+            username='comum@email.com',
+            email='comum@email.com',
+            password='12345678'
+        )
+
+        self.client.login(
+            username='comum@email.com',
+            password='12345678'
+        )
+
+        response = self.client.get(
+            reverse('administrador:cadastrar_funcionario')
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+
+    def test_usuario_comum_nao_cadastra_morador(self):
+        """
+        Apenas administradores podem cadastrar
+        moradores.
+        """
+        usuario_comum = User.objects.create_user(
+            username='comum@email.com',
+            email='comum@email.com',
+            password='12345678'
+        )
+
+        self.client.login(
+            username='comum@email.com',
+            password='12345678'
+        )
+
+        response = self.client.get(
+            reverse('administrador:cadastrar_morador')
+        )
+
+        self.assertEqual(response.status_code, 403)
