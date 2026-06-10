@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 from .forms import MoradorLoginForm, VeiculoForm, ReclamacaoForm
-from .models import Morador, Veiculo, Reclamacao
+from .models import Morador, Veiculo, Reclamacao, Ocorrencia
 from django.core.paginator import Paginator
 from apps.area.models import Area, Reserva
 from apps.area.forms import ReservaForm
@@ -214,3 +214,19 @@ def deletar_reclamacao(request, id):
     reclamacao = get_object_or_404(Reclamacao, id=id, apartamento=request.user.morador.apartamento)
     reclamacao.delete()
     return JsonResponse({'ok': True})
+
+
+@login_required
+def minhas_ocorrencias(request):
+    """Lista as ocorrências registradas contra o apartamento do morador."""
+    if not hasattr(request.user, 'morador'):
+        raise PermissionDenied
+    
+    morador = request.user.morador
+    ocorrencias_list = Ocorrencia.objects.filter(apartamento=morador.apartamento).order_by('-data')
+    
+    paginator = Paginator(ocorrencias_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'morador/lista_ocorrencias.html', {'page_obj': page_obj})

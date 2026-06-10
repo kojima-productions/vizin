@@ -3,9 +3,39 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from apps.morador.models import Morador, Veiculo, Reclamacao
+from apps.morador.models import Morador, Veiculo, Reclamacao, Ocorrencia, Apartamento
 from apps.administrador.models import Administrador
 from apps.funcionario.models import Funcionario
+
+class OcorrenciaForm(forms.ModelForm):
+    class Meta:
+        model = Ocorrencia
+        fields = ['apartamento', 'tipo_ocorrencia', 'descricao']
+        widgets = {
+            'apartamento': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_apartamento'
+            }),
+            'tipo_ocorrencia': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_tipo_ocorrencia'
+            }),
+            'descricao': forms.Textarea(attrs={
+                'class': 'input-field',
+                'placeholder': 'Descreva os detalhes da ocorrência...',
+                'id': 'id_descricao',
+                'rows': 4
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        administrador = kwargs.pop('administrador', None)
+        super().__init__(*args, **kwargs)
+        if administrador:
+            # Filtra apartamentos vinculados aos moradores deste administrador
+            self.fields['apartamento'].queryset = Apartamento.objects.filter(
+                morador__administrador=administrador
+            ).distinct().order_by('bloco', 'numero')
 
 class ReclamacaoForm(forms.ModelForm):
     class Meta:

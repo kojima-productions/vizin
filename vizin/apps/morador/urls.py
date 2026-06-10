@@ -21,4 +21,7 @@ urlpatterns = [
     path('reclamacoes/', views.lista_reclamacoes, name='lista_reclamacoes'),
     path('reclamacoes/nova/', views.cadastrar_reclamacao, name='cadastrar_reclamacao'),
     path('reclamacoes/<int:id>/deletar/', views.deletar_reclamacao, name='deletar_reclamacao'),
+
+    # Rotas para ocorrências
+    path('ocorrencias/', views.minhas_ocorrencias, name='minhas_ocorrencias'),
 ]

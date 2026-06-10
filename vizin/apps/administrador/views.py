@@ -12,10 +12,10 @@ from django.contrib.auth.models import User
 from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
 from apps.morador.forms import MoradorForm, MoradorEditForm
-from apps.morador.models import Morador, Apartamento, Veiculo, Reclamacao
+from apps.morador.models import Morador, Apartamento, Veiculo, Reclamacao, Ocorrencia
 from apps.area.models import Area, Reserva
 from apps.area.forms import AreaForm
-from apps.morador.forms import MoradorForm, MoradorEditForm, VeiculoForm, ReclamacaoForm
+from apps.morador.forms import MoradorForm, MoradorEditForm, VeiculoForm, ReclamacaoForm, OcorrenciaForm
 from django.core.paginator import Paginator
 
 
@@ -517,6 +517,72 @@ def deletar_reclamacao_adm(request, id):
 
     reclamacao = get_object_or_404(Reclamacao, id=id, administrador=request.user.administrador)
     reclamacao.delete()
+    
+    return JsonResponse({'ok': True})
+
+
+@login_required
+def lista_ocorrencias(request):
+    """Lista paginada de todas as ocorrências registradas pelo administrador."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    ocorrencias_list = Ocorrencia.objects.filter(administrador=request.user.administrador).order_by('-data')
+    
+    paginator = Paginator(ocorrencias_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'administrador/lista_ocorrencias.html', {'page_obj': page_obj})
+
+
+@login_required
+def cadastrar_ocorrencia(request):
+    """Cadastra uma nova ocorrência contra um apartamento."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    administrador = request.user.administrador
+    form = OcorrenciaForm(request.POST or None, administrador=administrador)
+    
+    if request.method == 'POST' and form.is_valid():
+        ocorrencia = form.save(commit=False)
+        ocorrencia.administrador = administrador
+        ocorrencia.save()
+        messages.success(request, 'Ocorrência registrada com sucesso!')
+        return redirect('administrador:lista_ocorrencias')
+        
+    return render(request, 'administrador/cadastrar_ocorrencia.html', {'form': form})
+
+
+@login_required
+def editar_ocorrencia(request, id):
+    """Edita uma ocorrência existente."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    ocorrencia = get_object_or_404(Ocorrencia, id=id, administrador=request.user.administrador)
+    form = OcorrenciaForm(request.POST or None, instance=ocorrencia, administrador=request.user.administrador)
+    
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Ocorrência atualizada com sucesso!')
+        return redirect('administrador:lista_ocorrencias')
+        
+    return render(request, 'administrador/cadastrar_ocorrencia.html', {'form': form, 'editando': True})
+
+
+@login_required
+def deletar_ocorrencia(request, id):
+    """Exclui uma ocorrência. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    ocorrencia = get_object_or_404(Ocorrencia, id=id, administrador=request.user.administrador)
+    ocorrencia.delete()
     
     return JsonResponse({'ok': True})
 
