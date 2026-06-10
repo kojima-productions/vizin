@@ -245,30 +245,9 @@
 /* 10. BOTÕES ESPECÍFICOS */
 .profile-actions {
     display: flex;
-    flex-direction: row; /* colocar botões lado a lado */
-    gap: 15px; /* Espaçamento entre os botões */
+    flex-direction: column;
+    gap: 15px; /* Espaçamento entre os dois botões */
     margin-top: 20px;
-    flex-wrap: wrap; /* permitir quebra em telas pequenas */
-}
-.profile-actions .btn-redefinir {
-    flex: 1; /* cada botão ocupa o mesmo espaço */
-    text-align: center;
-    display: inline-flex; /* allow centering of icon + text */
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-/* ícone dentro do botão */
-.btn-icon svg {
-    width: 18px;
-    height: 18px;
-    display: block;
-}
-
-/* opcional: cor do ícone segue o texto */
-.btn-redefinir .btn-icon {
-    color: white;
 }
 
 .btn-redefinir {
@@ -327,14 +306,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* branco levemente mais escuro que o fundo */
-    background-color: #f0f0f1;
-    padding: 12px 22px;
+    background-color: #f3e8ff;
+    padding: 10px 20px;
     border-radius: 30px; 
     margin: 15px;
-    /* sombra simples e leve */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    border: 1px solid rgba(229,231,235,0.7);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
 }
 
 .user-mini-info {
@@ -359,34 +336,12 @@
     font-size: 11px;
     font-weight: 800;
     color: #333;
-    display: inline-flex; /* alinhamento ícone + texto */
-    align-items: center;
-    gap: 8px;
 }
 
 .user-address {
     font-size: 9px;
     color: #666;
     line-height: 1.2;
-}
-
-/* estilo do ícone ao lado do nome */
-.admin-icon svg {
-    width: 16px;
-    height: 16px;
-    display: block;
-    color: var(--roxo-vizin);
-}
-
-/* link que envolve as informações do usuário no header */
-.user-mini-link {
-    color: inherit; /* herda cor do texto */
-    text-decoration: none; /* remove sublinhado */
-    display: inline-flex; /* permite alinhar avatar + texto */
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-}
 }
 
 .header-logo {
@@ -539,20 +494,16 @@
     z-index: 10;
 }
 
-nav {
-	display: flex !important;
-	flex-direction: row !important;
-	flex-wrap: nowrap !important;
-	gap: 10px !important;
-	align-items: center !important;
-}
-
 .nav-item {
     text-decoration: none;
     color: #222;
     font-size: 13px;
     font-weight: 600;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
     opacity: 0.6; 
     transition: all 0.3s ease;
 }
@@ -567,4 +518,184 @@ nav {
 .nav-item.active, .nav-item:hover {
     opacity: 1;
     font-weight: 800;
+}
+
+
+/* TELA DE APRESENTAÇÃO */
+
+/* Fundo escuro */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.hero-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: radial-gradient(circle at 50% 40%, rgba(124, 77, 255, 0.1) 0%, transparent 60%);
+}
+
+.hero-header {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Agrupa a imagem e o texto lado a lado */
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+}
+
+/* Tamanho e formato da imagem do logo */
+.hero-logo-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--roxo-vizin);
+}
+
+.hero-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px; 
+    text-align: center;
+    margin-top: -50px; 
+}
+
+.hero-title {
+    font-size: 42px; 
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+
+.hero-highlight {
+    color: var(--roxo-vizin);
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    color: #a0a0a0; 
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+/* Agrupamento dos botões */
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 350px; /* Tamanho para clicar no celular */
+}
+
+.btn-hero {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none; 
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* O botão administrador em destaque */
+.btn-primary {
+    background-color: var(--roxo-vizin);
+    color: white;
+    border: 2px solid var(--roxo-vizin);
+}
+
+.btn-primary:hover {
+    background-color: var(--roxo-hover);
+    border-color: var(--roxo-hover);
+}
+
+/* Os botões secundários (Morador e Funcionário) vazados para não poluir visualmente */
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 1px solid #444; 
+}
+
+.btn-secondary:hover {
+    background-color: #222; 
+    border-color: #666;
+}
+
+/* Estilo da pílula do Slogan */
+.hero-slogan {
+    background-color: rgba(124, 77, 255, 0.15); 
+    color: var(--roxo-vizin); 
+    border: 1px solid rgba(124, 77, 255, 0.3); 
+    padding: 6px 16px;
+    border-radius: 20px; 
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; 
+    margin-bottom: 25px; 
+}
+
+/* Frase do rodapé */
+.hero-trust {
+    margin-top: 50px;
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* ANIMAÇÕES DA LANDING PAGE */
+
+/* Definindo como o movimento vai acontecer */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animando o conteúdo principal */
+.hero-content {
+    opacity: 0; 
+    animation: fadeUp 1s ease-out forwards; 
+}
+
+/* Animando os botões com efeito cascata */
+.hero-actions {
+    opacity: 0;
+    animation: fadeUp 1s ease-out 0.4s forwards; 
+}
+
+/* Animando o rodapé */
+.hero-trust {
+    opacity: 0;
+    animation: fadeUp 1s ease-out 0.8s forwards;
 }
