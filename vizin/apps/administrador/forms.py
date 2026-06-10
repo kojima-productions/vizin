@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Administrador, Comunicado
+from .models import Administrador
 
 class AdministradorRegistrationForm(forms.Form):
     nome = forms.CharField(

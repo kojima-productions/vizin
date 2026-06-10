@@ -146,7 +146,7 @@
 
       {% if request.user.administrador %}
       <div style="display:flex;justify-content:flex-end;margin:12px 0;">
-        <a href="{% url 'administrador:cadastrar_comunicado' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Comunicado</a>
+        <a href="{% url 'comunicado:cadastrar_comunicado' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Comunicado</a>
       </div>
       {% endif %}
 
@@ -163,7 +163,7 @@
         {% for comunicado in comunicados %}
         <div class="post-card" id="comunicado-card-{{ comunicado.id }}">
           {% if request.user.administrador %}
-          <a href="{% url 'administrador:editar_comunicado' comunicado.id %}" class="btn-edit-card" title="Editar">
+          <a href="{% url 'comunicado:editar_comunicado' comunicado.id %}" class="btn-edit-card" title="Editar">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
           </a>
           <button type="button" class="btn-delete-card" onclick="openModal('{{ comunicado.id }}')" title="Excluir">
