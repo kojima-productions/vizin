@@ -12,10 +12,10 @@ from django.contrib.auth.models import User
 from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
 from apps.morador.forms import MoradorForm, MoradorEditForm
-from apps.morador.models import Morador, Apartamento, Veiculo
+from apps.morador.models import Morador, Apartamento, Veiculo, Reclamacao
 from apps.area.models import Area, Reserva
 from apps.area.forms import AreaForm
-from apps.morador.forms import MoradorForm, MoradorEditForm, VeiculoForm
+from apps.morador.forms import MoradorForm, MoradorEditForm, VeiculoForm, ReclamacaoForm
 from django.core.paginator import Paginator
 
 
@@ -461,6 +461,62 @@ def deletar_veiculo(request, id):
 
     veiculo = get_object_or_404(Veiculo, id=id, apartamento__morador__administrador=request.user.administrador)
     veiculo.delete()
+    
+    return JsonResponse({'ok': True})
+
+
+@login_required
+def lista_reclamacoes_adm(request):
+    """Lista todas as reclamações dos moradores deste administrador."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    reclamacoes_list = Reclamacao.objects.filter(administrador=request.user.administrador).order_by('-data')
+    
+    paginator = Paginator(reclamacoes_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'administrador/lista_reclamacoes.html', {'page_obj': page_obj})
+
+
+@login_required
+def avaliar_reclamacao(request, id):
+    """Aprova (valida) ou nega uma reclamação. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    reclamacao = get_object_or_404(Reclamacao, id=id, administrador=request.user.administrador)
+    
+    import json
+    data = json.loads(request.body)
+    acao = data.get('acao')
+
+    if acao == 'validar':
+        reclamacao.status = Reclamacao.Status.VALIDADA
+    elif acao == 'negar':
+        reclamacao.status = Reclamacao.Status.NEGADA
+    else:
+        return JsonResponse({'error': 'Ação inválida.'}, status=400)
+
+    reclamacao.save()
+    return JsonResponse({'ok': True, 'novo_status': reclamacao.get_status_display()})
+
+
+@login_required
+def deletar_reclamacao_adm(request, id):
+    """Deleta uma reclamação. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    reclamacao = get_object_or_404(Reclamacao, id=id, administrador=request.user.administrador)
+    reclamacao.delete()
     
     return JsonResponse({'ok': True})
 

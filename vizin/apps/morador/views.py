@@ -5,8 +5,9 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.http import JsonResponse
 
-from .forms import MoradorLoginForm, VeiculoForm
-from .models import Morador, Veiculo
+from .forms import MoradorLoginForm, VeiculoForm, ReclamacaoForm
+from .models import Morador, Veiculo, Reclamacao
+from django.core.paginator import Paginator
 from apps.area.models import Area, Reserva
 from apps.area.forms import ReservaForm
 
@@ -165,3 +166,51 @@ def deletar_veiculo_morador(request):
         return JsonResponse({'ok': True})
     except Veiculo.DoesNotExist:
         return JsonResponse({'error': 'Veículo não encontrado.'}, status=404)
+
+
+@login_required
+def lista_reclamacoes(request):
+    """Lista as reclamações do apartamento do morador logado."""
+    if not hasattr(request.user, 'morador'):
+        raise PermissionDenied
+    
+    morador = request.user.morador
+    reclamacoes_list = Reclamacao.objects.filter(apartamento=morador.apartamento).order_by('-data')
+    
+    paginator = Paginator(reclamacoes_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'morador/lista_reclamacoes.html', {'page_obj': page_obj})
+
+
+@login_required
+def cadastrar_reclamacao(request):
+    """Permite ao morador cadastrar uma nova reclamação."""
+    if not hasattr(request.user, 'morador'):
+        raise PermissionDenied
+    
+    form = ReclamacaoForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        reclamacao = form.save(commit=False)
+        reclamacao.apartamento = request.user.morador.apartamento
+        reclamacao.administrador = request.user.morador.administrador
+        reclamacao.save()
+        messages.success(request, 'Reclamação registrada com sucesso! Ela será analisada pelo administrador.')
+        return redirect('morador:lista_reclamacoes')
+    
+    return render(request, 'morador/cadastrar_reclamacao.html', {'form': form})
+
+
+@login_required
+def deletar_reclamacao(request, id):
+    """Permite ao morador excluir sua reclamação."""
+    if not hasattr(request.user, 'morador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    reclamacao = get_object_or_404(Reclamacao, id=id, apartamento=request.user.morador.apartamento)
+    reclamacao.delete()
+    return JsonResponse({'ok': True})

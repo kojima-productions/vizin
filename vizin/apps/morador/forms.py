@@ -3,9 +3,26 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from apps.morador.models import Morador, Veiculo
+from apps.morador.models import Morador, Veiculo, Reclamacao
 from apps.administrador.models import Administrador
 from apps.funcionario.models import Funcionario
+
+class ReclamacaoForm(forms.ModelForm):
+    class Meta:
+        model = Reclamacao
+        fields = ['tipo', 'descricao']
+        widgets = {
+            'tipo': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_tipo'
+            }),
+            'descricao': forms.Textarea(attrs={
+                'class': 'input-field',
+                'placeholder': 'Descreva aqui o problema...',
+                'id': 'id_descricao',
+                'rows': 4
+            }),
+        }
 
 class VeiculoForm(forms.ModelForm):
     class Meta:

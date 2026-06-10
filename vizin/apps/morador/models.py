@@ -46,3 +46,34 @@ class Veiculo(models.Model):
 
     def __str__(self):
         return f"{self.modelo} ({self.placa})"
+
+class Reclamacao(models.Model):
+    class Status(models.TextChoices):
+        ANALISE = "em analise", "Em análise"
+        NEGADA = "negada", "Negada"
+        VALIDADA = "validada", "Validada"
+
+    class TipoReclamacao(models.TextChoices):
+        BARULHO = "Barulho"
+        LIMPEZA = "Limpeza"
+        INFRAESTRUTURA = "Infraestrutura"
+        SEGURANCA = "Segurança"
+        OUTRO = "Outro"
+
+    descricao = models.TextField(max_length=500)
+    data = models.DateTimeField(auto_now_add=True)
+    tipo = models.CharField(max_length=20, choices=TipoReclamacao.choices)
+    status = models.CharField(
+        max_length=15, 
+        choices=Status.choices, 
+        default=Status.ANALISE
+    )
+
+    apartamento = models.ForeignKey(Apartamento, on_delete=models.CASCADE, related_name='reclamacoes')
+    administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='reclamacoes')
+
+    class Meta:
+        db_table = 'reclamacao'
+
+    def __str__(self):
+        return f"{self.tipo} - {self.apartamento} ({self.data})"

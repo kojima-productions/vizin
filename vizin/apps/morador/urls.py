@@ -16,4 +16,9 @@ urlpatterns = [
     # Rotas para veículos
     path('meu-veiculo/', views.gerenciar_veiculo, name='gerenciar_veiculo'),
     path('meu-veiculo/deletar/', views.deletar_veiculo_morador, name='deletar_veiculo'),
+
+    # Rotas para reclamações
+    path('reclamacoes/', views.lista_reclamacoes, name='lista_reclamacoes'),
+    path('reclamacoes/nova/', views.cadastrar_reclamacao, name='cadastrar_reclamacao'),
+    path('reclamacoes/<int:id>/deletar/', views.deletar_reclamacao, name='deletar_reclamacao'),
 ]
