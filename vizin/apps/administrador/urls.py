@@ -29,4 +29,7 @@ urlpatterns = [
     # Rotas para validação de reservas
     path('reservas/', views.lista_reservas, name='lista_reservas'),
     path('reservas/<int:reserva_id>/validar/', views.validar_reserva, name='validar_reserva'),
+
+    # Rota para comunicados
+    path('comunicados/novo/', views.cadastrar_comunicado, name='cadastrar_comunicado'),
 ]
