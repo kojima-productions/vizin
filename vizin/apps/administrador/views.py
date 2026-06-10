@@ -13,7 +13,7 @@ from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
 from apps.morador.forms import MoradorForm, MoradorEditForm
 from apps.morador.models import Morador, Apartamento
-from apps.area.models import Area
+from apps.area.models import Area, Reserva
 from apps.area.forms import AreaForm
 
 
