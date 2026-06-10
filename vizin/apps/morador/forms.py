@@ -3,9 +3,41 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from apps.morador.models import Morador
+from apps.morador.models import Morador, Veiculo
 from apps.administrador.models import Administrador
 from apps.funcionario.models import Funcionario
+
+class VeiculoForm(forms.ModelForm):
+    class Meta:
+        model = Veiculo
+        fields = ['modelo', 'cor', 'placa', 'tipo']
+        widgets = {
+            'modelo': forms.TextInput(attrs={
+                'class': 'input-field',
+                'placeholder': 'Ex: Civic',
+                'id': 'id_modelo'
+            }),
+            'cor': forms.TextInput(attrs={
+                'class': 'input-field',
+                'placeholder': 'Ex: Preto',
+                'id': 'id_cor'
+            }),
+            'placa': forms.TextInput(attrs={
+                'class': 'input-field',
+                'placeholder': 'Ex: ABC1D23',
+                'id': 'id_placa'
+            }),
+            'tipo': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_tipo'
+            }),
+        }
+
+    def clean_placa(self):
+        placa = self.cleaned_data.get('placa', '').upper()
+        if len(placa) != 7:
+            raise ValidationError('A placa deve ter exatamente 7 caracteres.')
+        return placa
 
 
 class MoradorForm(forms.Form):

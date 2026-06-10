@@ -27,3 +27,22 @@ class Morador(models.Model):
 
     class Meta:
         db_table = 'morador'
+
+class Veiculo(models.Model):
+    class TipoVeiculo(models.TextChoices):
+        CARRO = "Carro"
+        MOTO = "Moto"
+        OUTRO = "Outro"
+
+    modelo = models.CharField(max_length=50)
+    cor = models.CharField(max_length=20)
+    placa = models.CharField(max_length=7, unique=True)
+    tipo = models.CharField(max_length=10, choices=TipoVeiculo.choices)
+    
+    apartamento = models.OneToOneField(Apartamento, on_delete=models.CASCADE, related_name='veiculo')
+
+    class Meta:
+        db_table = 'veiculo'
+
+    def __str__(self):
+        return f"{self.modelo} ({self.placa})"

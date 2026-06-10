@@ -29,4 +29,9 @@ urlpatterns = [
     # Rotas para validação de reservas
     path('reservas/', views.lista_reservas, name='lista_reservas'),
     path('reservas/<int:reserva_id>/validar/', views.validar_reserva, name='validar_reserva'),
+
+    # Rotas para gerenciamento de veículos
+    path('veiculos/', views.lista_veiculos, name='lista_veiculos'),
+    path('veiculos/<int:id>/editar/', views.editar_veiculo, name='editar_veiculo'),
+    path('veiculos/<int:id>/deletar/', views.deletar_veiculo, name='deletar_veiculo'),
 ]
