@@ -13,6 +13,8 @@ from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
 from apps.morador.forms import MoradorForm, MoradorEditForm
 from apps.morador.models import Morador, Apartamento
+from apps.area.models import Area, Reserva
+from apps.area.forms import AreaForm
 
 
 def registro_administrador(request):
@@ -305,4 +307,108 @@ def deletar_funcionario(request, id):
     funcionario.user.delete()
 
     return JsonResponse({'ok': True})
+
+
+@login_required
+def lista_areas(request):
+    """Lista áreas comuns do administrador logado."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    areas = Area.objects.filter(administrador=request.user.administrador)
+    return render(request, 'administrador/lista_areas.html', {'areas': areas})
+
+
+@login_required
+def cadastrar_area(request):
+    """Cadastra uma nova área comum."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    form = AreaForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        area = form.save(commit=False)
+        area.administrador = request.user.administrador
+        area.save()
+        messages.success(request, 'Área comum cadastrada com sucesso.')
+        return redirect('administrador:lista_areas')
+
+    return render(request, 'administrador/cadastrar_area.html', {'form': form})
+
+
+@login_required
+def editar_area(request, id):
+    """Edita uma área comum existente."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    area = get_object_or_404(Area, id=id, administrador=request.user.administrador)
+    form = AreaForm(request.POST or None, instance=area)
+
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Área comum atualizada com sucesso.')
+        return redirect('administrador:lista_areas')
+
+    return render(request, 'administrador/editar_area.html', {'form': form, 'area': area})
+
+
+@login_required
+def deletar_area(request, id):
+    """Deleta uma área comum. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    area = get_object_or_404(Area, id=id, administrador=request.user.administrador)
+    area.delete()
+
+    return JsonResponse({'ok': True})
+
+
+@login_required
+def lista_reservas(request):
+    """Lista todas as solicitações de reserva para o administrador."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    # Filtra reservas das áreas gerenciadas por este administrador
+    reservas = Reserva.objects.filter(administrador=request.user.administrador).order_by('status', 'horario_inicio')
+    
+    # Filtro simples via GET se necessário (ex: ?status=aberto)
+    status_filtro = request.GET.get('status')
+    if status_filtro:
+        reservas = reservas.filter(status=status_filtro)
+
+    return render(request, 'administrador/lista_reservas.html', {
+        'reservas': reservas,
+        'status_choices': Reserva.Status.choices
+    })
+
+
+@login_required
+def validar_reserva(request, reserva_id):
+    """Aprova ou nega uma reserva. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    reserva = get_object_or_404(Reserva, id=reserva_id, administrador=request.user.administrador)
+    
+    # Ação pode ser 'aprovar' ou 'negar'
+    import json
+    data = json.loads(request.body)
+    acao = data.get('acao')
+
+    if acao == 'aprovar':
+        reserva.status = Reserva.Status.APROVADO
+    elif acao == 'negar':
+        reserva.status = Reserva.Status.NEGADO
+    else:
+        return JsonResponse({'error': 'Ação inválida.'}, status=400)
+
+    reserva.save()
+    return JsonResponse({'ok': True, 'novo_status': reserva.get_status_display()})
 
