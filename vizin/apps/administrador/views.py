@@ -6,8 +6,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
 
-from .forms import AdministradorRegistrationForm, AdministradorLoginForm, ComunicadoForm
-from .models import Administrador, Comunicado
+from .forms import AdministradorRegistrationForm, AdministradorLoginForm
+from .models import Administrador
 from django.contrib.auth.models import User
 from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
@@ -413,19 +413,5 @@ def validar_reserva(request, reserva_id):
     return JsonResponse({'ok': True, 'novo_status': reserva.get_status_display()})
 
 
-@login_required
-def cadastrar_comunicado(request):
-    """Permite que um administrador cadastre um novo comunicado."""
-    if not hasattr(request.user, 'administrador'):
-        raise PermissionDenied
 
-    form = ComunicadoForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        comunicado = form.save(commit=False)
-        comunicado.administrador = request.user.administrador
-        comunicado.save()
-        messages.success(request, 'Comunicado cadastrado com sucesso.')
-        return redirect('administrador:painel')
-
-    return render(request, 'administrador/cadastrar_comunicado.html', {'form': form})
 
