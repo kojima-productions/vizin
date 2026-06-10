@@ -19,4 +19,10 @@ urlpatterns = [
     path('moradores/novo/', views.cadastrar_morador, name='cadastrar_morador'),
     path('moradores/<int:id>/editar/', views.editar_morador, name='editar_morador'),
     path('moradores/<int:id>/deletar/', views.deletar_morador, name='deletar_morador'),
+
+    # Rotas para gerenciamento de áreas comuns
+    path('areas/', views.lista_areas, name='lista_areas'),
+    path('areas/novo/', views.cadastrar_area, name='cadastrar_area'),
+    path('areas/<int:id>/editar/', views.editar_area, name='editar_area'),
+    path('areas/<int:id>/deletar/', views.deletar_area, name='deletar_area'),
 ]

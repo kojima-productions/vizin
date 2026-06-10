@@ -13,6 +13,9 @@ class Area(models.Model):
     class Meta:
         db_table = "area"
 
+    def __str__(self):
+        return self.nome
+
 class Reserva(models.Model):
     horario_inicio = models.DateTimeField()
     horario_fim = models.DateTimeField()
@@ -24,5 +27,8 @@ class Reserva(models.Model):
 
     class Meta:
         db_table = "reserva"
+
+    def __str__(self):
+        return f"{self.morador} - {self.area} ({self.horario_inicio})"
 
 

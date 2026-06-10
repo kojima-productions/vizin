@@ -13,6 +13,8 @@ from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
 from apps.morador.forms import MoradorForm, MoradorEditForm
 from apps.morador.models import Morador, Apartamento
+from apps.area.models import Area
+from apps.area.forms import AreaForm
 
 
 def registro_administrador(request):
@@ -303,6 +305,63 @@ def deletar_funcionario(request, id):
 
     # Deletar o User associado — modelos provavelmente configurados para cascade
     funcionario.user.delete()
+
+    return JsonResponse({'ok': True})
+
+
+@login_required
+def lista_areas(request):
+    """Lista áreas comuns do administrador logado."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    areas = Area.objects.filter(administrador=request.user.administrador)
+    return render(request, 'administrador/lista_areas.html', {'areas': areas})
+
+
+@login_required
+def cadastrar_area(request):
+    """Cadastra uma nova área comum."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    form = AreaForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        area = form.save(commit=False)
+        area.administrador = request.user.administrador
+        area.save()
+        messages.success(request, 'Área comum cadastrada com sucesso.')
+        return redirect('administrador:lista_areas')
+
+    return render(request, 'administrador/cadastrar_area.html', {'form': form})
+
+
+@login_required
+def editar_area(request, id):
+    """Edita uma área comum existente."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+
+    area = get_object_or_404(Area, id=id, administrador=request.user.administrador)
+    form = AreaForm(request.POST or None, instance=area)
+
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Área comum atualizada com sucesso.')
+        return redirect('administrador:lista_areas')
+
+    return render(request, 'administrador/editar_area.html', {'form': form, 'area': area})
+
+
+@login_required
+def deletar_area(request, id):
+    """Deleta uma área comum. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    area = get_object_or_404(Area, id=id, administrador=request.user.administrador)
+    area.delete()
 
     return JsonResponse({'ok': True})
 
