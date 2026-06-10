@@ -12,4 +12,8 @@ urlpatterns = [
     path('areas/<int:area_id>/reservar/', views.fazer_reserva, name='fazer_reserva'),
     path('minhas-reservas/', views.minhas_reservas, name='minhas_reservas'),
     path('reservas/<int:reserva_id>/cancelar/', views.cancelar_reserva, name='cancelar_reserva'),
+
+    # Rotas para veículos
+    path('meu-veiculo/', views.gerenciar_veiculo, name='gerenciar_veiculo'),
+    path('meu-veiculo/deletar/', views.deletar_veiculo_morador, name='deletar_veiculo'),
 ]

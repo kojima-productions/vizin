@@ -5,8 +5,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.http import JsonResponse
 
-from .forms import MoradorLoginForm
-from .models import Morador
+from .forms import MoradorLoginForm, VeiculoForm
+from .models import Morador, Veiculo
 from apps.area.models import Area, Reserva
 from apps.area.forms import ReservaForm
 
@@ -118,3 +118,50 @@ def cancelar_reserva(request, reserva_id):
     reserva = get_object_or_404(Reserva, id=reserva_id, morador=request.user.morador)
     reserva.delete()
     return JsonResponse({'ok': True})
+
+
+@login_required
+def gerenciar_veiculo(request):
+    """Permite que o morador cadastre ou edite o veículo do seu apartamento."""
+    if not hasattr(request.user, 'morador'):
+        raise PermissionDenied
+    
+    morador = request.user.morador
+    apartamento = morador.apartamento
+    
+    # Tenta obter o veículo do apartamento
+    try:
+        veiculo = apartamento.veiculo
+    except Veiculo.DoesNotExist:
+        veiculo = None
+
+    form = VeiculoForm(request.POST or None, instance=veiculo)
+
+    if request.method == 'POST' and form.is_valid():
+        novo_veiculo = form.save(commit=False)
+        novo_veiculo.apartamento = apartamento
+        novo_veiculo.save()
+        messages.success(request, 'Informações do veículo salvas com sucesso!')
+        return redirect('morador:painel')
+
+    return render(request, 'morador/gerenciar_veiculo.html', {
+        'form': form,
+        'veiculo': veiculo
+    })
+
+
+@login_required
+def deletar_veiculo_morador(request):
+    """Permite que o morador exclua o veículo do seu apartamento."""
+    if not hasattr(request.user, 'morador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    try:
+        veiculo = request.user.morador.apartamento.veiculo
+        veiculo.delete()
+        return JsonResponse({'ok': True})
+    except Veiculo.DoesNotExist:
+        return JsonResponse({'error': 'Veículo não encontrado.'}, status=404)

@@ -12,9 +12,11 @@ from django.contrib.auth.models import User
 from apps.funcionario.models import Funcionario
 from apps.funcionario.forms import FuncionarioForm, FuncionarioEditForm
 from apps.morador.forms import MoradorForm, MoradorEditForm
-from apps.morador.models import Morador, Apartamento
+from apps.morador.models import Morador, Apartamento, Veiculo
 from apps.area.models import Area, Reserva
 from apps.area.forms import AreaForm
+from apps.morador.forms import MoradorForm, MoradorEditForm, VeiculoForm
+from django.core.paginator import Paginator
 
 
 def registro_administrador(request):
@@ -411,6 +413,56 @@ def validar_reserva(request, reserva_id):
 
     reserva.save()
     return JsonResponse({'ok': True, 'novo_status': reserva.get_status_display()})
+
+
+@login_required
+def lista_veiculos(request):
+    """Lista paginada de todos os veículos sob a gestão do administrador."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    # Veículos cujos apartamentos estão vinculados a moradores deste administrador
+    veiculos_list = Veiculo.objects.filter(
+        apartamento__morador__administrador=request.user.administrador
+    ).distinct().order_by('modelo')
+    
+    paginator = Paginator(veiculos_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'administrador/lista_veiculos.html', {'page_obj': page_obj})
+
+
+@login_required
+def editar_veiculo(request, id):
+    """Permite editar informações de um veículo."""
+    if not hasattr(request.user, 'administrador'):
+        raise PermissionDenied
+    
+    veiculo = get_object_or_404(Veiculo, id=id, apartamento__morador__administrador=request.user.administrador)
+    form = VeiculoForm(request.POST or None, instance=veiculo)
+    
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Veículo atualizado com sucesso!')
+        return redirect('administrador:lista_veiculos')
+        
+    return render(request, 'administrador/editar_veiculo.html', {'form': form, 'veiculo': veiculo})
+
+
+@login_required
+def deletar_veiculo(request, id):
+    """Deleta um veículo. Retorna JSON."""
+    if not hasattr(request.user, 'administrador'):
+        return JsonResponse({'error': 'Acesso negado.'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método inválido.'}, status=405)
+
+    veiculo = get_object_or_404(Veiculo, id=id, apartamento__morador__administrador=request.user.administrador)
+    veiculo.delete()
+    
+    return JsonResponse({'ok': True})
 
 
 
