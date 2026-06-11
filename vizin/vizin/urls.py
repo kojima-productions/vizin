@@ -26,7 +26,6 @@ urlpatterns = [
     path('funcionario/', include('apps.funcionario.urls')),
     path('comunicados/', include('apps.comunicado.urls')),
     path('encomendas/', include('apps.encomenda.urls')),
-    path('visitas/', include('apps.visita.urls')),
 
     # django-allauth routes (accounts/, social login callbacks, etc.)
     path('accounts/', include('allauth.urls')),
