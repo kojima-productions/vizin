@@ -1,0 +1,25 @@
+{% extends 'funcionario/base_funcionario.html' %}
+
+{% block main_content %}
+  <div class="dashboard-container" style="margin:24px auto;">
+    <div class="dashboard-welcome">
+      <h1>{% block form_title %}{% endblock %}</h1>
+      <p>{% block form_description %}{% endblock %}</p>
+    </div>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      
+      {% block form_content %}
+        {% for field in form %}
+          {% include 'funcionario/_form_fields.html' with field=field %}
+        {% endfor %}
+      {% endblock %}
+
+      <div class="profile-actions" style="width:100%;margin-top:12px;">
+        <button type="submit" class="btn-entrar">{% block submit_label %}Salvar{% endblock %}</button>
+        <a href="{% block cancel_url %}{% endblock %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
