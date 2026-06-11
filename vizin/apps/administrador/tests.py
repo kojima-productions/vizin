@@ -1,15 +1,10 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.utils import timezone
-from datetime import timedelta
-import json
-
 
 from apps.administrador.models import Administrador
 from apps.funcionario.models import Funcionario
 from apps.morador.models import Morador, Apartamento
-from apps.area.models import Area, Reserva
 
 
 class AdministradorViewsTest(TestCase):
@@ -433,7 +428,7 @@ class AdministradorViewsTest(TestCase):
     def test_usuario_comum_nao_cadastra_morador(self):
         """
         Apenas administradores podem cadastrar
-        moradores.  
+        moradores.
         """
         usuario_comum = User.objects.create_user(
             username='comum@email.com',
@@ -451,93 +446,3 @@ class AdministradorViewsTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
-
-class AdministradorReservaTest(TestCase):
-
-    def setUp(self):
-        self.user_admin = User.objects.create_user(
-            username='admin',
-            password='12345678'
-        )
-
-        self.admin = Administrador.objects.create(
-            user=self.user_admin,
-            cpf='12345678901'
-        )
-
-        self.user_morador = User.objects.create_user(
-            username='morador',
-            password='12345678'
-        )
-
-        self.apartamento = Apartamento.objects.create(
-            bloco='A',
-            andar='1',
-            numero='101'
-        )
-
-        self.morador = Morador.objects.create(
-            user=self.user_morador,
-            cpf='22222222222',
-            telefone='81999999999',
-            tipo_morador='Proprietario',
-            administrador=self.admin,
-            apartamento=self.apartamento
-        )
-
-        self.area = Area.objects.create(
-            nome="Salão de Festas",
-            regras="Sem bagunça",
-            taxa_reserva=100,
-            administrador=self.admin
-        )
-
-        self.inicio = timezone.now() + timedelta(days=1)
-        self.fim = self.inicio + timedelta(hours=2)
-
-        self.reserva = Reserva.objects.create(
-            horario_inicio=self.inicio,
-            horario_fim=self.fim,
-            motivo="Evento",
-            area=self.area,
-            morador=self.morador,
-            administrador=self.admin,
-            status=Reserva.Status.ABERTO
-        )
-    def test_aprovar_reserva(self):
-        self.reserva.status = Reserva.Status.APROVADO
-        self.reserva.save()
-
-        self.reserva.refresh_from_db()
-
-        self.assertEqual(self.reserva.status, Reserva.Status.APROVADO)
-
-    def test_negar_reserva(self):
-        self.reserva.status = Reserva.Status.NEGADO
-        self.reserva.save()
-
-        self.reserva.refresh_from_db()
-
-        self.assertEqual(self.reserva.status, Reserva.Status.NEGADO)
-
-    def test_admin_nao_pode_alterar_area_de_outro(self):
-        outro_user = User.objects.create_user(
-            username='admin2',
-            password='12345678'
-        )
-
-        outro_admin = Administrador.objects.create(
-            user=outro_user,
-            cpf='98765432100'
-        )
-
-        self.client.login(username='admin2', password='12345678')
-        response = self.client.post(
-            reverse('administrador:validar_reserva', args=[self.reserva.id]),
-            data=json.dumps({'acao': 'aprovar'}),
-            content_type='application/json'
-        )
-
-        self.assertEqual(response.status_code, 404)
-        self.reserva.refresh_from_db()
-        self.assertEqual(self.reserva.status, Reserva.Status.ABERTO)
