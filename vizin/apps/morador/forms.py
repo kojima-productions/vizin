@@ -3,9 +3,88 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from apps.morador.models import Morador
+from apps.morador.models import Morador, Veiculo, Reclamacao, Ocorrencia, Apartamento
 from apps.administrador.models import Administrador
 from apps.funcionario.models import Funcionario
+
+class OcorrenciaForm(forms.ModelForm):
+    class Meta:
+        model = Ocorrencia
+        fields = ['apartamento', 'tipo_ocorrencia', 'descricao']
+        widgets = {
+            'apartamento': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_apartamento'
+            }),
+            'tipo_ocorrencia': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_tipo_ocorrencia'
+            }),
+            'descricao': forms.Textarea(attrs={
+                'class': 'input-field',
+                'placeholder': 'Descreva os detalhes da ocorrência...',
+                'id': 'id_descricao',
+                'rows': 4
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        administrador = kwargs.pop('administrador', None)
+        super().__init__(*args, **kwargs)
+        if administrador:
+            # Filtra apartamentos vinculados aos moradores deste administrador
+            self.fields['apartamento'].queryset = Apartamento.objects.filter(
+                morador__administrador=administrador
+            ).distinct().order_by('bloco', 'numero')
+
+class ReclamacaoForm(forms.ModelForm):
+    class Meta:
+        model = Reclamacao
+        fields = ['tipo', 'descricao']
+        widgets = {
+            'tipo': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_tipo'
+            }),
+            'descricao': forms.Textarea(attrs={
+                'class': 'input-field',
+                'placeholder': 'Descreva aqui o problema...',
+                'id': 'id_descricao',
+                'rows': 4
+            }),
+        }
+
+class VeiculoForm(forms.ModelForm):
+    class Meta:
+        model = Veiculo
+        fields = ['modelo', 'cor', 'placa', 'tipo']
+        widgets = {
+            'modelo': forms.TextInput(attrs={
+                'class': 'input-field',
+                'placeholder': 'Ex: Civic',
+                'id': 'id_modelo'
+            }),
+            'cor': forms.TextInput(attrs={
+                'class': 'input-field',
+                'placeholder': 'Ex: Preto',
+                'id': 'id_cor'
+            }),
+            'placa': forms.TextInput(attrs={
+                'class': 'input-field',
+                'placeholder': 'Ex: ABC1D23',
+                'id': 'id_placa'
+            }),
+            'tipo': forms.Select(attrs={
+                'class': 'input-field',
+                'id': 'id_tipo'
+            }),
+        }
+
+    def clean_placa(self):
+        placa = self.cleaned_data.get('placa', '').upper()
+        if len(placa) != 7:
+            raise ValidationError('A placa deve ter exatamente 7 caracteres.')
+        return placa
 
 
 class MoradorForm(forms.Form):

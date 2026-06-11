@@ -29,4 +29,20 @@ urlpatterns = [
     # Rotas para validação de reservas
     path('reservas/', views.lista_reservas, name='lista_reservas'),
     path('reservas/<int:reserva_id>/validar/', views.validar_reserva, name='validar_reserva'),
+
+    # Rotas para gerenciamento de veículos
+    path('veiculos/', views.lista_veiculos, name='lista_veiculos'),
+    path('veiculos/<int:id>/editar/', views.editar_veiculo, name='editar_veiculo'),
+    path('veiculos/<int:id>/deletar/', views.deletar_veiculo, name='deletar_veiculo'),
+
+    # Rotas para reclamações
+    path('reclamacoes/', views.lista_reclamacoes_adm, name='lista_reclamacoes'),
+    path('reclamacoes/<int:id>/avaliar/', views.avaliar_reclamacao, name='avaliar_reclamacao'),
+    path('reclamacoes/<int:id>/deletar/', views.deletar_reclamacao_adm, name='deletar_reclamacao'),
+
+    # Rotas para ocorrências
+    path('ocorrencias/', views.lista_ocorrencias, name='lista_ocorrencias'),
+    path('ocorrencias/nova/', views.cadastrar_ocorrencia, name='cadastrar_ocorrencia'),
+    path('ocorrencias/<int:id>/editar/', views.editar_ocorrencia, name='editar_ocorrencia'),
+    path('ocorrencias/<int:id>/deletar/', views.deletar_ocorrencia, name='deletar_ocorrencia'),
 ]

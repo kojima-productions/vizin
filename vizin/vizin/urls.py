@@ -24,6 +24,7 @@ urlpatterns = [
     path('administrador/', include('apps.administrador.urls')),
     path('morador/', include('apps.morador.urls')),
     path('funcionario/', include('apps.funcionario.urls')),
+    path('comunicados/', include('apps.comunicado.urls')),
 
     # django-allauth routes (accounts/, social login callbacks, etc.)
     path('accounts/', include('allauth.urls')),
