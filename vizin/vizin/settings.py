@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.administrador',
     'apps.comunicado',
     'apps.encomenda',
+    'apps.visita',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
