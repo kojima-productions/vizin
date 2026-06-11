@@ -1,151 +1,38 @@
+{% extends 'morador/base_form.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <title>Gerenciar Veículo - Vizin</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
-      <a href="/morador/painel" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
-        <div class="mini-avatar"></div>
-        <div class="user-details">
-          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
-          <div class="user-address">Morador</div>
-        </div>
-      </a>
+
+{% block title %}Gerenciar Veículo - Vizin{% endblock %}
+{% block form_title %}{% if veiculo %}Editar{% else %}Cadastrar{% endif %} Veículo{% endblock %}
+{% block form_description %}{% if veiculo %}Atualize as informações do seu veículo.{% else %}Cadastre o veículo do seu apartamento.{% endif %}{% endblock %}
+
+{% block form_content %}
+    {% for field in form %}
+        {% include 'morador/_form_fields.html' with field=field %}
+    {% endfor %}
+{% endblock %}
+
+{% block form_actions %}
+    <div class="profile-actions" style="width:100%;margin-top:12px;">
+        <button type="submit" class="btn-entrar">Salvar Informações</button>
+        
+        {% if veiculo %}
+            <button type="button" onclick="openModal('{{ veiculo.id }}', '{% url 'morador:deletar_veiculo' %}')" class="btn-excluir">Excluir Veículo</button>
+        {% endif %}
+        
+        <a href="{% url 'morador:painel' %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
     </div>
-    <div class="header-logo">Vizin</div>
-  </header>
+{% endblock %}
 
-  <main style="display:flex;justify-content:center;">
-    <div style="width:100%;max-width:900px;padding:0 16px;">
-      <div class="dashboard-container" style="margin:24px auto;">
-        <div class="dashboard-welcome">
-          <h1>{% if veiculo %}Editar{% else %}Cadastrar{% endif %} Veículo</h1>
-          <p>{% if veiculo %}Atualize as informações do seu veículo.{% else %}Cadastre o veículo do seu apartamento.{% endif %}</p>
-        </div>
+{% block modals %}
+    {% if veiculo %}
+        {% include 'morador/_delete_modal.html' with item_id_prefix='' message='Tem certeza que deseja remover este veículo? Esta ação não pode ser desfeita.' %}
+    {% endif %}
+{% endblock %}
 
-        <form method="post" novalidate>
-          {% csrf_token %}
-          {% for field in form %}
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="{{ field.id_for_label }}" style="display:block;margin-bottom:6px;font-weight:bold;color:#555;">{{ field.label }}</label>
-              {{ field }}
-              {% if field.errors %}
-                <div style="color:#d32f2f;font-size:12px;margin-top:4px;">{{ field.errors.0 }}</div>
-              {% endif %}
-            </div>
-          {% endfor %}
-
-          <div class="profile-actions" style="width:100%;margin-top:12px;display:flex;flex-direction:column;gap:10px;">
-            <button type="submit" class="btn-entrar">Salvar Informações</button>
-            
-            {% if veiculo %}
-              <button type="button" onclick="openModal()" class="btn-excluir" style="background:#fff;color:#d32f2f;border:1px solid #d32f2f;">Excluir Veículo</button>
-            {% endif %}
-            
-            <a href="{% url 'morador:painel' %}" style="text-align:center;text-decoration:none;color:#666;font-size:14px;margin-top:10px;">Voltar ao Painel</a>
-          </div>
-        </form>
-      </div>
-    </div>
-  </main>
-
-  {% if veiculo %}
-  <!-- Modal de Confirmação -->
-  <div id="deleteModal" class="modal-overlay">
-    <div class="modal-card">
-      <h3>Confirmar Exclusão</h3>
-      <p>Tem certeza que deseja remover este veículo? Esta ação não pode ser desfeita.</p>
-      <div class="modal-actions">
-        <button type="button" onclick="closeModal()" class="btn-modal btn-cancel">Cancelar</button>
-        <button type="button" id="confirmDeleteBtn" class="btn-modal btn-confirm">Excluir</button>
-      </div>
-    </div>
-  </div>
-
-  <style>
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      backdrop-filter: blur(2px);
-    }
-    .modal-card {
-      background: #fff;
-      width: 90%;
-      max-width: 400px;
-      padding: 24px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-    }
-    .modal-card h3 { margin-bottom: 12px; color: #333; }
-    .modal-card p { margin-bottom: 24px; color: #666; font-size: 14px; }
-    .modal-actions { display: flex; gap: 12px; }
-    .btn-modal {
-      flex: 1;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-    }
-    .btn-confirm { background: #d32f2f; color: #fff; }
-    .btn-confirm:hover { background: #b91c1c; }
-    .btn-cancel { background: #e5e7eb; color: #374151; }
-    .btn-cancel:hover { background: #d1d5db; }
-  </style>
-
-  <script>
-    function openModal() {
-      document.getElementById('deleteModal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('deleteModal').style.display = 'none';
-    }
-
-    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-      fetch("{% url 'morador:deletar_veiculo' %}", {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}',
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.ok) {
-          window.location.href = "{% url 'morador:painel' %}";
-        } else {
-          alert('Erro ao deletar veículo: ' + (data.error || 'Erro desconhecido'));
-          closeModal();
-        }
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-        alert('Ocorreu um erro ao processar a solicitação.');
-        closeModal();
-      });
+{% block extra_js %}
+<script>
+    document.addEventListener('itemDeleted', function(e) {
+        window.location.href = "{% url 'morador:painel' %}";
     });
-
-    window.onclick = function(event) {
-      const modal = document.getElementById('deleteModal');
-      if (event.target == modal) {
-        closeModal();
-      }
-    }
-  </script>
-  {% endif %}
-</body>
-</html>
+</script>
+{% endblock %}

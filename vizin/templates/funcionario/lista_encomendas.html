@@ -1,84 +1,53 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lista de Encomendas - Vizin</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
-      <a href="{% if request.user.administrador %}/administrador/painel{% else %}/funcionario/painel{% endif %}" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
-        <div class="mini-avatar"></div>
-        <div class="user-details">
-          <div class="user-name">
-            {% if request.user.administrador %}
-              <span class="admin-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/></svg></span>
-            {% endif %}
-            {{ request.user.get_full_name|default:request.user.email }}
+{% extends 'funcionario/base_list.html' %}
+
+{% block title %}Gestão de Encomendas{% endblock %}
+
+{% block page_title %}Encomendas Recebidas{% endblock %}
+
+{% block list_actions %}
+<div style="display:flex;justify-content:flex-end;margin:12px 0;">
+  <a href="{% url 'encomenda:cadastrar_encomenda' %}" class="btn-dashboard" style="max-width:220px;">📦 Nova Encomenda</a>
+</div>
+{% endblock %}
+
+{% block list_content %}
+  {% if encomendas %}
+  <div class="posts-scroll-area">
+    {% for e in encomendas %}
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-author-info">
+          <div>
+            <div class="author-name">{{ e.apartamento }}</div>
+            <div class="author-role">{{ e.get_status_display }}</div>
           </div>
-          <div class="user-address">{% if request.user.administrador %}Administrador{% else %}Funcionário{% endif %}</div>
         </div>
-      </a>
-    </div>
-    <div class="header-logo">Vizin</div>
-  </header>
-
-  <main style="display:flex;justify-content:center;">
-    <div style="width:100%;max-width:900px;padding:0 16px;">
-
-      <div class="section-title" style="margin-top:8px;">
-        <h2>Encomendas Recebidas</h2>
+        <div class="post-time">{{ e.data_chegada|date:"d/m/Y H:i" }}</div>
       </div>
 
-      <div style="display:flex;justify-content:flex-end;margin:12px 0;">
-        <a href="{% url 'encomenda:cadastrar_encomenda' %}" class="btn-dashboard" style="max-width:220px;">📦 Nova Encomenda</a>
+      <div class="post-body">
+        <strong>Descrição:</strong> {{ e.descricao }}<br>
+        <strong>Registrado por:</strong> {{ e.registrado_por.get_full_name|default:e.registrado_por.username }}<br>
+        
+        {% if e.status == 'Entregue' %}
+          <div style="margin-top: 8px; color: #059669; font-weight: bold;">
+            ✓ Entregue em {{ e.data_entrega|date:"d/m/Y H:i" }} por {{ e.entregue_por.get_full_name|default:e.entregue_por.username }}
+          </div>
+        {% endif %}
       </div>
 
-      {% if encomendas %}
-      <div class="posts-scroll-area">
-        {% for e in encomendas %}
-        <div class="post-card">
-          <div class="post-header">
-            <div class="post-author-info">
-              <div>
-                <div class="author-name">{{ e.apartamento }}</div>
-                <div class="author-role">{{ e.get_status_display }}</div>
-              </div>
-            </div>
-            <div class="post-time">{{ e.data_chegada|date:"d/m/Y H:i" }}</div>
-          </div>
-
-          <div class="post-body">
-            <strong>Descrição:</strong> {{ e.descricao }}<br>
-            <strong>Registrado por:</strong> {{ e.registrado_por.get_full_name|default:e.registrado_por.username }}<br>
-            
-            {% if e.status == 'Entregue' %}
-              <div style="margin-top: 8px; color: #059669; font-weight: bold;">
-                ✓ Entregue em {{ e.data_entrega|date:"d/m/Y H:i" }} por {{ e.entregue_por.get_full_name|default:e.entregue_por.username }}
-              </div>
-            {% endif %}
-          </div>
-
-          {% if e.status == 'Recebida' %}
-          <div class="post-actions" style="border-top: 1px solid #eee; margin-top: 12px; padding-top: 12px;">
-            <form action="{% url 'encomenda:registrar_entrega' e.id %}" method="post">
-              {% csrf_token %}
-              <button type="submit" class="btn-entrar" style="width: auto; padding: 8px 16px; font-size: 14px;">Marcar como Entregue</button>
-            </form>
-          </div>
-          {% endif %}
-        </div>
-        {% endfor %}
+      {% if e.status == 'Recebida' %}
+      <div class="post-actions" style="border-top: 1px solid #eee; margin-top: 12px; padding-top: 12px;">
+        <form action="{% url 'encomenda:registrar_entrega' e.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn-entrar" style="width: auto; padding: 8px 16px; font-size: 14px;">Marcar como Entregue</button>
+        </form>
       </div>
-      {% else %}
-      <div class="profile-card" style="text-align:center;padding:30px;">Nenhuma encomenda registrada.</div>
       {% endif %}
-
     </div>
-  </main>
-</body>
-</html>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="profile-card" style="text-align:center;padding:30px;">Nenhuma encomenda registrada.</div>
+  {% endif %}
+{% endblock %}

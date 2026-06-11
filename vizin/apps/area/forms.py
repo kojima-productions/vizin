@@ -45,7 +45,7 @@ class ReservaForm(forms.ModelForm):
                 'class': 'input-field',
                 'placeholder': 'Motivo da reserva (ex: Aniversário)',
                 'id': 'id_motivo',
-                'rows': 3
+                'rows': 4
             }),
         }
 

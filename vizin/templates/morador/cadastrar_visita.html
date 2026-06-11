@@ -1,60 +1,21 @@
+{% extends 'morador/base_form.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <title>Agendar Visita - Vizin</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
-      <a href="/morador/painel" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
-        <div class="mini-avatar"></div>
-        <div class="user-details">
-          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
-          <div class="user-address">Morador</div>
-        </div>
-      </a>
-    </div>
-    <div class="header-logo">Vizin</div>
-  </header>
 
-  <main style="display:flex;justify-content:center;">
-    <div style="width:100%;max-width:900px;padding:0 16px;">
-      <div class="dashboard-container" style="margin:24px auto;">
-        <div class="dashboard-welcome">
-          <h1>Agendar Visita</h1>
-          <p>Crie um aviso de visita para gerar um código de acesso.</p>
-        </div>
+{% block title %}Agendar Visita - Vizin{% endblock %}
+{% block form_title %}Agendar Visita{% endblock %}
+{% block form_description %}Crie um aviso de visita para gerar um código de acesso.{% endblock %}
 
-        <form method="post" novalidate>
-          {% csrf_token %}
-          {% for field in form %}
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="{{ field.id_for_label }}" style="display:block;margin-bottom:6px;font-weight:bold;color:#555;">{{ field.label }}</label>
-              {{ field }}
-              {% if field.errors %}
-                <div style="color:#d32f2f;font-size:12px;margin-top:4px;">{{ field.errors.0 }}</div>
-              {% endif %}
-            </div>
-          {% endfor %}
+{% block submit_label %}Agendar Visita{% endblock %}
+{% block cancel_url %}{% url 'visita:lista_visitas_morador' %}{% endblock %}
 
-          <div class="profile-actions" style="width:100%;margin-top:12px;">
-            <button type="submit" class="btn-entrar">Agendar Visita</button>
-            <a href="{% url 'visita:lista_visitas_morador' %}" class="btn-excluir" style="text-decoration:none;display:inline-block;text-align:center;background:#fff;color:#666;border:1px solid #ccc;">Cancelar</a>
-          </div>
-        </form>
-      </div>
-    </div>
-  </main>
-
-  <script src="https://unpkg.com/imask"></script>
-  <script>
-    var cpfMask = IMask(document.getElementById('cpf_field'), {
-      mask: '000.000.000-00'
-    });
-  </script>
-</body>
-</html>
+{% block extra_js %}
+<script src="https://unpkg.com/imask"></script>
+<script>
+    var cpfField = document.getElementById('id_cpf'); // Assumindo que o ID do campo é id_cpf
+    if (cpfField) {
+        var cpfMask = IMask(cpfField, {
+            mask: '000.000.000-00'
+        });
+    }
+</script>
+{% endblock %}

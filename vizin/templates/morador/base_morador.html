@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} - Vizin</title>
+  
+  <!-- CSS Modular Global -->
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button type="button" onclick="window.history.back();" class="btn-back">← </button>
+      <a href="{% url 'morador:painel' %}" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
+        <div class="mini-avatar"></div>
+        <div class="user-details">
+          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
+          <div class="user-address">Morador</div>
+        </div>
+      </a>
+    </div>
+    <div class="header-logo">Vizin</div>
+  </header>
+
+  <main style="display:flex;justify-content:center;">
+    <div style="width:100%;max-width:900px;padding:0 16px;">
+        {% if messages %}
+        <div style="margin-bottom:16px;">
+          {% for message in messages %}
+            <div class="post-card" style="background:#eaf3ff;color:#063;padding:12px;">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% block main_content %}{% endblock %}
+    </div>
+  </main>
+
+  {% block modals %}{% endblock %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

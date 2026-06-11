@@ -9,12 +9,36 @@ from apps.morador.models import Morador
 
 
 class FuncionarioForm(forms.Form):
-    nome = forms.CharField(max_length=100, required=True)
-    cpf = forms.CharField(max_length=14, required=True, label='CPF')  # aceita formatos com pontos/traços
-    email = forms.EmailField(required=True)
-    telefone = forms.CharField(max_length=15, required=True)  # aceita formatos com espaços/()-+
-    cargo = forms.CharField(max_length=100, required=True)
-    senha = forms.CharField(min_length=8, widget=forms.PasswordInput, required=True)
+    nome = forms.CharField(
+        max_length=100, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Nome completo'})
+    )
+    cpf = forms.CharField(
+        max_length=14, 
+        required=True, 
+        label='CPF',
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': '000.000.000-00'})
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'input-field', 'placeholder': 'email@exemplo.com'})
+    )
+    telefone = forms.CharField(
+        max_length=15, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': '(00) 00000-0000'})
+    )
+    cargo = forms.CharField(
+        max_length=100, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Ex: Porteiro'})
+    )
+    senha = forms.CharField(
+        min_length=8, 
+        widget=forms.PasswordInput(attrs={'class': 'input-field', 'placeholder': 'Mínimo 8 caracteres'}), 
+        required=True
+    )
 
     def _only_digits(self, value):
         return re.sub(r"\D", "", value or "")
@@ -47,12 +71,37 @@ class FuncionarioForm(forms.Form):
 
 
 class FuncionarioEditForm(forms.Form):
-    nome = forms.CharField(max_length=100, required=True)
-    cpf = forms.CharField(max_length=14, required=True, label='CPF')
-    email = forms.EmailField(required=True)
-    telefone = forms.CharField(max_length=15, required=True)
-    cargo = forms.CharField(max_length=100, required=True)
-    senha = forms.CharField(min_length=8, widget=forms.PasswordInput, required=False, help_text="Deixe em branco para não alterar.")
+    nome = forms.CharField(
+        max_length=100, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Nome completo'})
+    )
+    cpf = forms.CharField(
+        max_length=14, 
+        required=True, 
+        label='CPF',
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': '000.000.000-00'})
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'input-field', 'placeholder': 'email@exemplo.com'})
+    )
+    telefone = forms.CharField(
+        max_length=15, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': '(00) 00000-0000'})
+    )
+    cargo = forms.CharField(
+        max_length=100, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Ex: Porteiro'})
+    )
+    senha = forms.CharField(
+        min_length=8, 
+        widget=forms.PasswordInput(attrs={'class': 'input-field', 'placeholder': 'Deixe em branco para não alterar'}), 
+        required=False, 
+        help_text="Deixe em branco para não alterar."
+    )
 
     def __init__(self, *args, **kwargs):
         self.funcionario_id = kwargs.pop('funcionario_id', None)

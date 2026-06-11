@@ -71,7 +71,8 @@
     text-transform: uppercase;
 }
 
-.input-group input {
+.input-field, .input-group input, .input-group textarea, .input-group select {
+    width: 100%;
     padding: 14px;
     border: 2px solid var(--roxo-vizin);
     border-radius: 10px;
@@ -81,8 +82,20 @@
     transition: all 0.3s ease;
 }
 
-/* Efeito quando o usuário clica no input */
-.input-group input:focus {
+/* Estilo específico para Select para garantir que a seta e as bordas fiquem consistentes */
+.input-field[name], .input-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238b5cf6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 18px;
+    cursor: pointer;
+}
+
+/* Efeito quando o usuário clica no campo */
+.input-field:focus, .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
     border-color: var(--roxo-hover);
     background-color: white;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
@@ -250,8 +263,11 @@
     margin-top: 20px;
     flex-wrap: wrap; /* permitir quebra em telas pequenas */
 }
-.profile-actions .btn-redefinir {
+.profile-actions .btn-redefinir,
+.profile-actions .btn-entrar,
+.profile-actions .btn-excluir {
     flex: 1; /* cada botão ocupa o mesmo espaço */
+    width: auto; /* Garante que não forcem largura total */
     text-align: center;
     display: inline-flex; /* allow centering of icon + text */
     align-items: center;
@@ -568,3 +584,106 @@ nav {
     opacity: 1;
     font-weight: 800;
 }
+
+/* ESTILOS PARA AUTOCOMPLETE E PESQUISA */
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% - 2px);
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 2px solid var(--roxo-vizin);
+    border-radius: 0 0 10px 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.search-item {
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+.search-item:last-child { border-bottom: none; }
+.search-item:hover {
+    background-color: var(--cinza-fundo);
+    color: var(--roxo-vizin);
+    font-weight: bold;
+}
+.search-item.no-results {
+    color: #999;
+    cursor: default;
+}
+.input-field.searching {
+    border-radius: 10px 10px 0 0;
+    border-bottom-color: transparent;
+}
+
+/* 11. ESTILOS PARA MODAIS DE CONFIRMAÇÃO */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+.modal-card {
+    background: #fff;
+    width: 90%;
+    max-width: 400px;
+    padding: 24px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+.modal-card h3 { margin-bottom: 12px; color: #333; }
+.modal-card p { margin-bottom: 24px; color: #666; font-size: 14px; }
+.modal-actions { display: flex; gap: 12px; }
+.btn-modal {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+.btn-modal.btn-confirm { background: #d32f2f; color: #fff; }
+.btn-modal.btn-confirm:hover { background: #b91c1c; }
+.btn-modal.btn-cancel { background: #e5e7eb; color: #374151; }
+.btn-modal.btn-cancel:hover { background: #d1d5db; }
+
+/* Estilos de botões de ação nos cards */
+.btn-delete-card, .btn-edit-card {
+    position: absolute;
+    top: 12px;
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-decoration: none;
+}
+.btn-delete-card { right: 12px; color: #d32f2f; }
+.btn-delete-card:hover { background: #fff5f5; transform: scale(1.05); border-color: #feb2b2; }
+.btn-edit-card { right: 52px; color: #2563eb; }
+.btn-edit-card:hover { background: #f0f7ff; transform: scale(1.05); border-color: #bfdbfe; }
