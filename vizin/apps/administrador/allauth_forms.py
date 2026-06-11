@@ -3,7 +3,11 @@ from django import forms
 from .models import Administrador
 
 class AdministradorSocialSignupForm(forms.Form):
-    cpf = forms.CharField(max_length=20, label='CPF')
+    cpf = forms.CharField(
+        max_length=20, 
+        label='CPF',
+        widget=forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Somente números (11 dígitos)'})
+    )
 
     def __init__(self, *args, sociallogin=None, **kwargs):
         """Accept sociallogin kwarg that allauth passes when instantiating the form.

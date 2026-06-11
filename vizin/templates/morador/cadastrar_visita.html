@@ -32,18 +32,12 @@
         <form method="post" novalidate>
           {% csrf_token %}
           {% for field in form %}
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="{{ field.id_for_label }}" style="display:block;margin-bottom:6px;font-weight:bold;color:#555;">{{ field.label }}</label>
-              {{ field }}
-              {% if field.errors %}
-                <div style="color:#d32f2f;font-size:12px;margin-top:4px;">{{ field.errors.0 }}</div>
-              {% endif %}
-            </div>
+            {% include 'administrador/_form_fields.html' with field=field %}
           {% endfor %}
 
           <div class="profile-actions" style="width:100%;margin-top:12px;">
             <button type="submit" class="btn-entrar">Agendar Visita</button>
-            <a href="{% url 'visita:lista_visitas_morador' %}" class="btn-excluir" style="text-decoration:none;display:inline-block;text-align:center;background:#fff;color:#666;border:1px solid #ccc;">Cancelar</a>
+            <a href="{% url 'visita:lista_visitas_morador' %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
           </div>
         </form>
       </div>

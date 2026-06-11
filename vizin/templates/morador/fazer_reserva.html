@@ -38,15 +38,7 @@
         <form method="post" novalidate>
           {% csrf_token %}
           {% for field in form %}
-            <div class="form-group" style="margin-bottom:16px;">
-                <label for="{{ field.id_for_label }}" style="display:block; margin-bottom:4px; font-weight:bold;">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <div style="color: #d32f2f; font-size: 12px; margin-top: 4px;">
-                        {{ field.errors.0 }}
-                    </div>
-                {% endif %}
-            </div>
+            {% include 'administrador/_form_fields.html' with field=field %}
           {% endfor %}
           
           {% if form.non_field_errors %}
@@ -57,7 +49,7 @@
 
           <div class="profile-actions" style="width:100%;margin-top:12px;">
             <button type="submit" class="btn-entrar">Confirmar Reserva</button>
-            <a href="{% url 'morador:lista_areas_comuns' %}" class="btn-excluir" style="text-decoration:none;display:inline-block;text-align:center;">Cancelar</a>
+            <a href="{% url 'morador:lista_areas_comuns' %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
           </div>
         </form>
       </div>

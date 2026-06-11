@@ -5,69 +5,6 @@
   <meta charset="utf-8">
   <title>Registrar Encomenda - Vizin</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <style>
-    /* Estilização para o Autocomplete de Apartamento */
-    .search-container {
-        position: relative;
-        width: 100%;
-    }
-    
-    #apartamento_search, .input-field {
-        width: 100%;
-        padding: 14px;
-        border: 2px solid var(--roxo-vizin);
-        border-radius: 10px;
-        background-color: var(--cinza-input);
-        font-size: 15px;
-        outline: none;
-        transition: all 0.3s ease;
-    }
-
-    #apartamento_search:focus, .input-field:focus {
-        border-color: var(--roxo-hover);
-        background-color: white;
-        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-    }
-
-    .search-results {
-        position: absolute;
-        top: calc(100% - 2px); /* Cola na borda do input */
-        left: 0;
-        width: 100%; /* Mesma largura do input */
-        background: #fff;
-        border: 2px solid var(--roxo-vizin);
-        border-radius: 0 0 10px 10px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 1000;
-        display: none;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        box-sizing: border-box; /* Garante que a borda não aumente a largura */
-    }
-
-    .search-item {
-        padding: 12px 14px;
-        cursor: pointer;
-        font-size: 14px;
-        border-bottom: 1px solid #eee;
-        color: #333;
-    }
-    .search-item:last-child { border-bottom: none; }
-    .search-item:hover {
-        background-color: var(--cinza-fundo);
-        color: var(--roxo-vizin);
-        font-weight: bold;
-    }
-    .search-item.no-results {
-        color: #999;
-        cursor: default;
-    }
-    /* Estilo quando o campo está com foco e lista aberta */
-    #apartamento_search.searching {
-        border-radius: 10px 10px 0 0;
-        border-bottom-color: transparent;
-    }
-  </style>
 </head>
 <body>
   <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
@@ -102,8 +39,8 @@
         <form method="post" novalidate>
           {% csrf_token %}
           {% for field in form %}
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="{{ field.id_for_label }}" style="display:block;margin-bottom:6px;font-weight:bold;color:#555;">{{ field.label }}</label>
+            <div class="input-group">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
               
               {% if field.name == 'apartamento' %}
                 <div class="search-container">
@@ -117,14 +54,14 @@
               {% endif %}
 
               {% if field.errors %}
-                <div style="color:#d32f2f;font-size:12px;margin-top:4px;">{{ field.errors.0 }}</div>
+                <div style="color:#d32f2f;font-size:13px;margin-top:6px;">{{ field.errors.0 }}</div>
               {% endif %}
             </div>
           {% endfor %}
 
           <div class="profile-actions" style="width:100%;margin-top:12px;">
             <button type="submit" class="btn-entrar">Registrar Chegada</button>
-            <a href="{% if request.user.administrador %}{% url 'encomenda:lista_encomendas_adm' %}{% else %}{% url 'encomenda:lista_encomendas_func' %}{% endif %}" class="btn-excluir" style="text-decoration:none;display:inline-block;text-align:center;">Cancelar</a>
+            <a href="{% if request.user.administrador %}{% url 'encomenda:lista_encomendas_adm' %}{% else %}{% url 'encomenda:lista_encomendas_func' %}{% endif %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
           </div>
         </form>
       </div>

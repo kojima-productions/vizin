@@ -32,23 +32,17 @@
         <form method="post" novalidate>
           {% csrf_token %}
           {% for field in form %}
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="{{ field.id_for_label }}" style="display:block;margin-bottom:6px;font-weight:bold;color:#555;">{{ field.label }}</label>
-              {{ field }}
-              {% if field.errors %}
-                <div style="color:#d32f2f;font-size:12px;margin-top:4px;">{{ field.errors.0 }}</div>
-              {% endif %}
-            </div>
+            {% include 'administrador/_form_fields.html' with field=field %}
           {% endfor %}
 
-          <div class="profile-actions" style="width:100%;margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+          <div class="profile-actions" style="width:100%;margin-top:12px;">
             <button type="submit" class="btn-entrar">Salvar Informações</button>
             
             {% if veiculo %}
-              <button type="button" onclick="openModal()" class="btn-excluir" style="background:#fff;color:#d32f2f;border:1px solid #d32f2f;">Excluir Veículo</button>
+              <button type="button" onclick="openModal()" class="btn-excluir">Excluir Veículo</button>
             {% endif %}
             
-            <a href="{% url 'morador:painel' %}" style="text-align:center;text-decoration:none;color:#666;font-size:14px;margin-top:10px;">Voltar ao Painel</a>
+            <a href="{% url 'morador:painel' %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
           </div>
         </form>
       </div>
