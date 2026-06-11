@@ -1,0 +1,63 @@
+<!-- Modal de Confirmação de Exclusão Genérico -->
+<div id="deleteModal" class="modal-overlay">
+  <div class="modal-card">
+    <h3>Confirmar Exclusão</h3>
+    <p>{% if message %}{{ message }}{% else %}Tem certeza que deseja remover este item? Esta ação não pode ser desfeita.{% endif %}</p>
+    <div class="modal-actions">
+      <button type="button" onclick="closeModal()" class="btn-modal btn-cancel">Cancelar</button>
+      <button type="button" id="confirmDeleteBtn" class="btn-modal btn-confirm">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let itemIdToDelete = null;
+
+  function openModal(id) {
+    itemIdToDelete = id;
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    itemIdToDelete = null;
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (!itemIdToDelete) return;
+
+    // A URL deve ser configurada pelo template filho via variável 'delete_url_base'
+    const url = `{{ delete_url_base }}${itemIdToDelete}/deletar/`;
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        const card = document.getElementById(`{{ item_id_prefix }}${itemIdToDelete}`);
+        if (card) card.remove();
+        closeModal();
+      } else {
+        alert('Erro ao deletar: ' + (data.error || 'Erro desconhecido'));
+        closeModal();
+      }
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+      alert('Ocorreu um erro ao processar a solicitação.');
+      closeModal();
+    });
+  });
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target == modal) {
+      closeModal();
+    }
+  }
+</script>

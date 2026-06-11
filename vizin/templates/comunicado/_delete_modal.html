@@ -1,0 +1,60 @@
+<!-- Modal de Confirmação de Exclusão - Módulo Comunicados -->
+<div id="deleteModal" class="modal-overlay">
+  <div class="modal-card">
+    <h3>Confirmar Exclusão</h3>
+    <p>{% if message %}{{ message }}{% else %}Tem certeza que deseja remover este comunicado? Esta ação não pode ser desfeita.{% endif %}</p>
+    <div class="modal-actions">
+      <button type="button" onclick="closeModal()" class="btn-modal btn-cancel">Cancelar</button>
+      <button type="button" id="confirmDeleteBtn" class="btn-modal btn-confirm">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let comunicadoIdToDelete = null;
+
+  function openModal(id) {
+    comunicadoIdToDelete = id;
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    comunicadoIdToDelete = null;
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (!comunicadoIdToDelete) return;
+
+    fetch(`/comunicados/${comunicadoIdToDelete}/deletar/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        const card = document.getElementById(`comunicado-card-${comunicadoIdToDelete}`);
+        if (card) card.remove();
+        closeModal();
+      } else {
+        alert('Erro ao deletar: ' + (data.error || 'Erro desconhecido'));
+        closeModal();
+      }
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+      alert('Ocorreu um erro ao processar a solicitação.');
+      closeModal();
+    });
+  });
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target == modal) {
+      closeModal();
+    }
+  }
+</script>
