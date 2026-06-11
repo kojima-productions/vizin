@@ -146,26 +146,26 @@ class FuncionarioViewsTest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_lista_funcionarios_redireciona_para_administrador(self):
-        """
-        A rota antiga foi mantida apenas para
-        compatibilidade e deve redirecionar.
-        """
-        self.client.login(
-            username='func@email.com',
-            password='12345678'
-        )
+        def test_lista_funcionarios_redireciona_para_administrador(self):
+            """
+            A rota antiga foi mantida apenas para
+            compatibilidade e deve redirecionar.
+            """
+            self.client.login(
+                username='func@email.com',
+                password='12345678'
+            )
 
-        response = self.client.get(
-            reverse('funcionario:lista_funcionarios')
-        )
+            response = self.client.get(
+                reverse('funcionario:lista_funcionarios')
+            )
 
-        self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
 
-        self.assertEqual(
-            response.url,
-            reverse('administrador:lista_funcionarios')
-        )
+            self.assertEqual(
+                response.url,
+                reverse('administrador:lista_funcionarios')
+            )
 
     def test_cadastrar_funcionario_redireciona_para_administrador(self):
         """
