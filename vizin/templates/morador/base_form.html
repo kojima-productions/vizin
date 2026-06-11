@@ -1,0 +1,28 @@
+{% extends 'morador/base_morador.html' %}
+{% load static %}
+
+{% block main_content %}
+<div class="dashboard-container" style="margin:24px auto;">
+    <div class="dashboard-welcome">
+        <h1>{% block form_title %}{% endblock %}</h1>
+        <p>{% block form_description %}{% endblock %}</p>
+    </div>
+
+    <form method="post" {% block form_attributes %}{% endblock %} novalidate>
+        {% csrf_token %}
+        
+        {% block form_content %}
+            {% for field in form %}
+                {% include 'morador/_form_fields.html' with field=field %}
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_actions %}
+        <div class="profile-actions" style="width:100%;margin-top:12px;">
+            <button type="submit" class="btn-entrar">{% block submit_label %}Salvar{% endblock %}</button>
+            <a href="{% block cancel_url %}{% endblock %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
+        </div>
+        {% endblock %}
+    </form>
+</div>
+{% endblock %}

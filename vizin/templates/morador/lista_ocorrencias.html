@@ -1,78 +1,33 @@
+{% extends 'morador/base_list.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Minhas Ocorrências - Vizin</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
-      <a href="{% url 'morador:painel' %}" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
-        <div class="mini-avatar"></div>
-        <div class="user-details">
-          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
-          <div class="user-address">Morador</div>
-        </div>
-      </a>
-    </div>
-    <div class="header-logo">Vizin</div>
-  </header>
 
-  <main style="display:flex;justify-content:center;">
-    <div style="width:100%;max-width:900px;padding:0 16px;">
+{% block title %}Minhas Ocorrências - Vizin{% endblock %}
+{% block page_title %}Minhas Ocorrências{% endblock %}
 
-      <div class="section-title" style="margin-top:8px;">
-        <h2>Minhas Ocorrências</h2>
-      </div>
-
-      {% if page_obj %}
-      <div class="posts-scroll-area">
-        {% for o in page_obj %}
-        <div class="post-card">
-          <div class="post-header">
+{% block list_content %}
+{% if page_obj %}
+<div class="posts-scroll-area">
+    {% for o in page_obj %}
+    <div class="post-card">
+        <div class="post-header">
             <div class="post-author-info">
-              <div>
-                <div class="author-name">{{ o.tipo_ocorrencia }}</div>
-                <div class="author-role">{{ o.data|date:"d/m/Y H:i" }}</div>
-              </div>
+                <div>
+                    <div class="author-name">{{ o.tipo_ocorrencia }}</div>
+                    <div class="author-role">{{ o.data|date:"d/m/Y H:i" }}</div>
+                </div>
             </div>
-            <div class="status-badge" style="background:#fee2e2; color:#991b1b; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; text-transform:uppercase;">
+            <div class="status-badge status-registrada">
                 Registrada
             </div>
-          </div>
-
-          <div class="post-body">
-            {{ o.descricao }}
-          </div>
         </div>
-        {% endfor %}
-      </div>
 
-      <!-- Paginação -->
-      <div class="pagination" style="display:flex;justify-content:center;gap:10px;margin:20px 0;">
-        {% if page_obj.has_previous %}
-          <a href="?page=1" class="btn-back" style="text-decoration:none;">&laquo; Primeira</a>
-          <a href="?page={{ page_obj.previous_page_number }}" class="btn-back" style="text-decoration:none;">Anterior</a>
-        {% endif %}
-
-        <span style="align-self:center;">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}" class="btn-back" style="text-decoration:none;">Próxima</a>
-          <a href="?page={{ page_obj.paginator.num_pages }}" class="btn-back" style="text-decoration:none;">Última &raquo;</a>
-        {% endif %}
-      </div>
-
-      {% else %}
-      <div class="profile-card" style="text-align:center;padding:30px;">Não há ocorrências registradas para o seu apartamento.</div>
-      {% endif %}
-
+        <div class="post-body">
+            {{ o.descricao }}
+        </div>
     </div>
-  </main>
-
-</body>
-</html>
+    {% endfor %}
+</div>
+{% else %}
+<div class="profile-card" style="text-align:center;padding:30px;">Não há ocorrências registradas para o seu apartamento.</div>
+{% endif %}
+{% endblock %}

@@ -4,10 +4,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login Morador</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>Login Morador - Vizin</title>
+  
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  
   <style>
-  .login-card { max-width: 480px; padding: 40px; }
+    /* Estilos específicos para a página de login que ainda não estão nos modais globais */
+    .login-wrapper {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--cinza-fundo);
+    }
+    .login-card {
+        background-color: white;
+        width: 100%;
+        max-width: 480px;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .logo-vizin {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        margin-bottom: 40px;
+        display: block;
+        border-radius: 50%;
+    }
+    .login-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .link-senha {
+        font-size: 13px;
+        color: var(--roxo-vizin);
+        text-align: right;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+    .link-senha:hover {
+        text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -16,10 +63,10 @@
     <div class="login-card">
       <img src="{% static 'assets/icon.jpeg' %}" alt="Logo do aplicativo Vizin" class="logo-vizin">
 
-      <h1 style="margin-bottom:20px;">Login Morador</h1>
+      <h1 style="margin-bottom:20px; font-size: 24px; font-weight: 800; color: #333;">Login Morador</h1>
 
       {% if form.non_field_errors %}
-        <div style="color:red; margin-bottom:12px;">{{ form.non_field_errors }}</div>
+        <div style="color:red; margin-bottom:12px; font-size: 14px;">{{ form.non_field_errors }}</div>
       {% endif %}
 
       <form method="post" class="login-form">
@@ -29,7 +76,7 @@
           <label for="id_login">LOGIN:</label>
           {{ form.login }}
           {% if form.login.errors %}
-            <div style="color:red">{{ form.login.errors }}</div>
+            <div style="color:red; font-size: 12px; margin-top: 4px;">{{ form.login.errors }}</div>
           {% endif %}
         </div>
 
@@ -37,7 +84,7 @@
           <label for="id_senha">SENHA:</label>
           {{ form.senha }}
           {% if form.senha.errors %}
-            <div style="color:red">{{ form.senha.errors }}</div>
+            <div style="color:red; font-size: 12px; margin-top: 4px;">{{ form.senha.errors }}</div>
           {% endif %}
         </div>
 

@@ -1,67 +1,39 @@
+{% extends 'morador/base_list.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Minhas Encomendas - Vizin</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
-      <a href="/morador/painel" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
-        <div class="mini-avatar"></div>
-        <div class="user-details">
-          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
-          <div class="user-address">{{ request.user.morador.apartamento }}</div>
-        </div>
-      </a>
-    </div>
-    <div class="header-logo">Vizin</div>
-  </header>
 
-  <main style="display:flex;justify-content:center;">
-    <div style="width:100%;max-width:900px;padding:0 16px;">
+{% block title %}Minhas Encomendas - Vizin{% endblock %}
+{% block page_title %}Minhas Encomendas{% endblock %}
 
-      <div class="section-title" style="margin-top:8px;">
-        <h2>Minhas Encomendas</h2>
-      </div>
-
-      {% if encomendas %}
-      <div class="posts-scroll-area">
-        {% for e in encomendas %}
-        <div class="post-card">
-          <div class="post-header">
+{% block list_content %}
+{% if encomendas %}
+<div class="posts-scroll-area">
+    {% for e in encomendas %}
+    <div class="post-card">
+        <div class="post-header">
             <div class="post-author-info">
-              <div>
-                <div class="author-name">{{ e.descricao }}</div>
-                <div class="author-role" style="{% if e.status == 'Recebida' %}color: #d97706;{% else %}color: #059669;{% endif %}">
-                  {{ e.get_status_display }}
+                <div>
+                    <div class="author-name">{{ e.descricao }}</div>
+                    <div class="author-role" style="{% if e.status == 'Recebida' %}color: #d97706;{% else %}color: #059669;{% endif %}">
+                        {{ e.get_status_display }}
+                    </div>
                 </div>
-              </div>
             </div>
             <div class="post-time">Chegada: {{ e.data_chegada|date:"d/m/Y H:i" }}</div>
-          </div>
-
-          <div class="post-body">
-            {% if e.status == 'Entregue' %}
-              <div style="margin-top: 8px; color: #059669; font-weight: bold;">
-                ✓ Entregue em {{ e.data_entrega|date:"d/m/Y H:i" }}
-              </div>
-            {% else %}
-              <p style="color: #666; font-size: 14px;">Esta encomenda está disponível para retirada na portaria.</p>
-            {% endif %}
-          </div>
         </div>
-        {% endfor %}
-      </div>
-      {% else %}
-      <div class="profile-card" style="text-align:center;padding:30px;">Você não possui encomendas registradas.</div>
-      {% endif %}
 
+        <div class="post-body">
+            {% if e.status == 'Entregue' %}
+                <div style="margin-top: 8px; color: #059669; font-weight: bold;">
+                    ✓ Entregue em {{ e.data_entrega|date:"d/m/Y H:i" }}
+                </div>
+            {% else %}
+                <p style="color: #666; font-size: 14px;">Esta encomenda está disponível para retirada na portaria.</p>
+            {% endif %}
+        </div>
     </div>
-  </main>
-</body>
-</html>
+    {% endfor %}
+</div>
+{% else %}
+<div class="profile-card" style="text-align:center;padding:30px;">Você não possui encomendas registradas.</div>
+{% endif %}
+{% endblock %}

@@ -1,48 +1,9 @@
+{% extends 'morador/base_form.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <title>Nova Reclamação - Vizin</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button type="button" onclick="window.history.back();" class="btn-back" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">← </button>
-      <a href="/morador/painel" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
-        <div class="mini-avatar"></div>
-        <div class="user-details">
-          <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
-          <div class="user-address">Morador</div>
-        </div>
-      </a>
-    </div>
-    <div class="header-logo">Vizin</div>
-  </header>
 
-  <main style="display:flex;justify-content:center;">
-    <div style="width:100%;max-width:900px;padding:0 16px;">
-      <div class="dashboard-container" style="margin:24px auto;">
-        <div class="dashboard-welcome">
-          <h1>Nova Reclamação</h1>
-          <p>Descreva o problema para que possamos analisá-lo.</p>
-        </div>
+{% block title %}Nova Reclamação - Vizin{% endblock %}
+{% block form_title %}Nova Reclamação{% endblock %}
+{% block form_description %}Descreva o problema para que possamos analisá-lo.{% endblock %}
 
-        <form method="post" novalidate>
-          {% csrf_token %}
-          {% for field in form %}
-            {% include 'administrador/_form_fields.html' with field=field %}
-          {% endfor %}
-
-          <div class="profile-actions" style="width:100%;margin-top:12px;">
-            <button type="submit" class="btn-entrar">Registrar Reclamação</button>
-            <a href="{% url 'morador:lista_reclamacoes' %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
-          </div>
-        </form>
-      </div>
-    </div>
-  </main>
-
-</body>
-</html>
+{% block submit_label %}Registrar Reclamação{% endblock %}
+{% block cancel_url %}{% url 'morador:lista_reclamacoes' %}{% endblock %}

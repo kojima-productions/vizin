@@ -1,0 +1,9 @@
+<div class="input-group">
+    <label for="{{ field.id_for_label }}">{{ field.label|upper }}:</label>
+    {{ field }}
+    {% if field.errors %}
+        <div style="color:red; font-size: 12px; margin-top: 4px;">
+            {{ field.errors }}
+        </div>
+    {% endif %}
+</div>

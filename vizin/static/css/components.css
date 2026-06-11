@@ -52,10 +52,44 @@
     flex-wrap: wrap;
 }
 
+.profile-actions .btn-redefinir,
 .profile-actions .btn-entrar,
 .profile-actions .btn-excluir {
     flex: 1;
     width: auto;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-redefinir {
+    padding: 16px;
+    background-color: var(--roxo-vizin);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-redefinir:hover {
+    background-color: var(--roxo-hover);
+}
+
+/* ícone dentro do botão */
+.btn-icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.btn-redefinir .btn-icon {
+    color: white;
 }
 
 /* INPUTS */
