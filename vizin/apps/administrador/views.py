@@ -24,7 +24,7 @@ def registro_administrador(request):
 
     Fluxo:
     - GET: exibe o formulário
-    - POST: valida o formulário, cria User com create_user() dentro de transaction.atomic(), cria Administrador e redireciona para login.
+    - POST: valida o formulário, cria User com create_user() dentro de transaction.atomic(), cria Administrador e redireciona para o painel.
     """
     form = None
     if request.method == 'POST':
@@ -37,6 +37,13 @@ def registro_administrador(request):
             with transaction.atomic():
                 user = User.objects.create_user(username=email, email=email, password=senha, first_name=nome)
                 Administrador.objects.create(user=user, cpf=cpf)
+            
+            # Autentica e loga o usuário recém-criado
+            user = authenticate(request, username=email, password=senha)
+            if user is not None:
+                login(request, user)
+                return redirect('administrador:painel')
+            
             return redirect('administrador:login')
     else:
         form = AdministradorRegistrationForm()
