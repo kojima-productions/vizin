@@ -187,3 +187,25 @@ main {
     font-size: 14px;
     border-left: 4px solid #063;
 }
+
+/* CARD DE BOAS-VINDAS */
+.welcome-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-top: 20px;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.welcome-card h2 {
+    color: var(--roxo-vizin);
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.welcome-card p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 15px;
+}

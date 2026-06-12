@@ -1,35 +1,55 @@
-{% extends 'funcionario/base_funcionario.html' %}
-
-{% block title %}Painel do Funcionário{% endblock %}
-
-{% block main_content %}
-  <div class="profile-actions" style="margin-bottom:20px;">
-    <a href="{% url 'comunicado:lista_comunicados' %}" class="btn-entrar" style="background-color: var(--roxo-vizin); color: white;">
-      <span class="btn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.54 8.46C16.4774 9.39764 17.004 10.6692 17.004 11.995C17.004 13.3208 16.4774 14.5924 15.54 15.53" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.07 4.93C20.9448 6.80527 21.9979 9.34839 21.9979 12C21.9979 14.6516 20.9448 17.1947 19.07 19.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      Comunicados
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Vizin - Funcionário{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/paineis/painel.css' %}">
+</head>
+<body>
+  <header class="feed-header">
+    <a href="{% url 'funcionario:painel' %}" class="user-mini-link">
+      <div class="mini-avatar"></div>
+      <div class="user-details">
+        <div class="user-name">{{ request.user.get_full_name|default:request.user.email }}</div>
+        <div class="user-address">Funcionário</div>
+      </div>
     </a>
-    <a href="{% url 'encomenda:lista_encomendas_func' %}" class="btn-entrar" style="background-color: var(--roxo-vizin); color: white;">
-      <span class="btn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 8V21H3V8M21 8L12 3L3 8M21 8H3M10 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      Encomendas
-    </a>
-    <a href="{% url 'visita:lista_visitas_func' %}" class="btn-entrar" style="background-color: var(--roxo-vizin); color: white;">
-      <span class="btn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm14 14v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      Visitas
-    </a>
-  </div>
+    <div class="header-logo">Vizin</div>
+  </header>
 
-  {% if messages %}
-    <div style="margin-bottom:16px;">
-      {% for message in messages %}
-        <div class="post-card" style="background:#eaf3ff;color:#063;">{{ message }}</div>
-      {% endfor %}
+  <main>
+    <div class="container-painel">
+      <div class="admin-dashboard-grid">
+        <a href="{% url 'comunicado:lista_comunicados' %}" class="btn-redefinir">
+          <span class="btn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.54 8.46C16.4774 9.39764 17.004 10.6692 17.004 11.995C17.004 13.3208 16.4774 14.5924 15.54 15.53" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.07 4.93C20.9448 6.80527 21.9979 9.34839 21.9979 12C21.9979 14.6516 20.9448 17.1947 19.07 19.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          Comunicados
+        </a>
+        <a href="{% url 'encomenda:lista_encomendas_func' %}" class="btn-redefinir">
+          <span class="btn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 8V21H3V8M21 8L12 3L3 8M21 8H3M10 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          Encomendas
+        </a>
+        <a href="{% url 'visita:lista_visitas_func' %}" class="btn-redefinir">
+          <span class="btn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm14 14v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          Visitas
+        </a>
+      </div>
+
+      {% if messages %}
+        <div style="margin-top:20px;">
+          {% for message in messages %}
+            <div class="post-card">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <section class="welcome-card">
+        <h2>Bem-vindo, {{ request.user.first_name|default:request.user.email }}!</h2>
+        <p>Este é o seu painel de controle. Aqui você pode gerenciar os comunicados do condomínio, registrar a chegada de encomendas e controlar o fluxo de visitas de forma rápida e organizada.</p>
+      </section>
+
     </div>
-  {% endif %}
+  </main>
 
-  <section class="dashboard-container">
-    <div class="dashboard-welcome">
-        <h2>Bem-vindo {{ request.user.get_full_name|default:request.user.email }}</h2>
-        <p>Este é o painel do funcionário. Utilize os botões acima para gerenciar as operações do condomínio.</p>
-    </div>
-  </section>
-{% endblock %}
+</body>
+</html>
