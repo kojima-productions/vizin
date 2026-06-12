@@ -21,4 +21,4 @@ Para o desenvolvimento utilizaremos:
 | :---: | :---: |
 | Python | 3.13.5 |
 | Django | 6.0.4 |
-| Mysql |  8.4 |
+| Supabase | --  |

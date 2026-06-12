@@ -1,0 +1,42 @@
+{% extends 'comunicado/base_comunicado.html' %}
+
+{% block main_content %}
+  <div class="section-title" style="margin-top:8px;">
+    <h2>{% block page_title %}{% endblock %}</h2>
+  </div>
+
+  {% block list_actions %}{% endblock %}
+
+  {% block search_bar %}{% endblock %}
+
+  {% if messages %}
+    <div style="margin-bottom:16px;">
+      {% for message in messages %}
+        <div class="post-card" style="background:#eaf3ff;color:#063;padding:12px;">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div id="list_container">
+    {% block list_content %}{% endblock %}
+  </div>
+
+  <!-- Paginação Padrão -->
+  {% block pagination %}
+    {% if page_obj and page_obj.paginator.num_pages > 1 %}
+    <div class="pagination" style="display:flex;justify-content:center;gap:10px;margin:20px 0;">
+      {% if page_obj.has_previous %}
+        <a href="?{% if query %}q={{ query }}&{% endif %}page=1" class="btn-back" style="text-decoration:none;">&laquo; Primeira</a>
+        <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page_obj.previous_page_number }}" class="btn-back" style="text-decoration:none;">Anterior</a>
+      {% endif %}
+
+      <span style="align-self:center;">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page_obj.next_page_number }}" class="btn-back" style="text-decoration:none;">Próxima</a>
+        <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page_obj.paginator.num_pages }}" class="btn-back" style="text-decoration:none;">Última &raquo;</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  {% endblock %}
+{% endblock %}

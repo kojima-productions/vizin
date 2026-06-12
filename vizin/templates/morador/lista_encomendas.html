@@ -1,0 +1,39 @@
+{% extends 'morador/base_list.html' %}
+{% load static %}
+
+{% block title %}Minhas Encomendas - Vizin{% endblock %}
+{% block page_title %}Minhas Encomendas{% endblock %}
+
+{% block list_content %}
+{% if encomendas %}
+<div class="posts-scroll-area">
+    {% for e in encomendas %}
+    <div class="post-card">
+        <div class="post-header">
+            <div class="post-author-info">
+                <div>
+                    <div class="author-name">{{ e.descricao }}</div>
+                    <div class="author-role" style="{% if e.status == 'Recebida' %}color: #d97706;{% else %}color: #059669;{% endif %}">
+                        {{ e.get_status_display }}
+                    </div>
+                </div>
+            </div>
+            <div class="post-time">Chegada: {{ e.data_chegada|date:"d/m/Y H:i" }}</div>
+        </div>
+
+        <div class="post-body">
+            {% if e.status == 'Entregue' %}
+                <div style="margin-top: 8px; color: #059669; font-weight: bold;">
+                    ✓ Entregue em {{ e.data_entrega|date:"d/m/Y H:i" }}
+                </div>
+            {% else %}
+                <p style="color: #666; font-size: 14px;">Esta encomenda está disponível para retirada na portaria.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="profile-card" style="text-align:center;padding:30px;">Você não possui encomendas registradas.</div>
+{% endif %}
+{% endblock %}

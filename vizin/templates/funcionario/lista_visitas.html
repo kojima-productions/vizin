@@ -1,0 +1,77 @@
+{% extends 'funcionario/base_list.html' %}
+
+{% block title %}Gerenciar Visitas{% endblock %}
+
+{% block page_title %}Gerenciar Visitas{% endblock %}
+
+{% block search_bar %}
+  <div style="margin:12px 0;">
+    <form method="get" action="." style="display:flex; gap:10px;">
+      <input type="text" name="q" value="{{ query }}" placeholder="Pesquisar por Código, Nome ou CPF..." class="input-field" style="margin-bottom:0;">
+      <button type="submit" class="btn-entrar" style="width:auto; padding: 0 20px;">Buscar</button>
+      {% if query %}
+        <a href="." class="btn-back" style="text-decoration:none; padding: 12px 20px;">Limpar</a>
+      {% endif %}
+    </form>
+  </div>
+{% endblock %}
+
+{% block list_content %}
+  {% if page_obj %}
+  <div class="posts-scroll-area">
+    {% for v in page_obj %}
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-author-info">
+          <div>
+            <div class="author-name">{{ v.nome }}</div>
+            <div class="author-role">Código: <strong>{{ v.acesso }}</strong> | CPF: {{ v.cpf }}</div>
+          </div>
+        </div>
+        <div class="status-badge status-{{ v.status|slugify }}">
+            {{ v.status }}
+        </div>
+      </div>
+
+      <div class="post-body">
+        <strong>Morador Responsável:</strong> {{ v.morador }}<br>
+        <strong>Agendado em:</strong> {{ v.data_criacao|date:"d/m/Y H:i" }}
+        
+        {% if v.status == 'Registrada' %}
+          <div style="margin-top: 8px; color: #059669; font-weight: bold;">
+            ✓ Entrada registrada em {{ v.data_entrada|date:"d/m/Y H:i" }}
+            {% if v.funcionario %} por {{ v.funcionario.user.get_full_name|default:v.funcionario.user.username }}{% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if v.status == 'Agendada' %}
+      <div class="post-actions" style="border-top: 1px solid #eee; margin-top: 12px; padding-top: 12px;">
+        <form action="{% url 'visita:registrar_entrada' v.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn-entrar" style="width: auto; padding: 8px 16px; font-size: 14px;">Registrar Entrada</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="profile-card" style="text-align:center;padding:30px;">Nenhuma visita encontrada.</div>
+  {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .status-agendada { background: #fef3c7; color: #92400e; }
+    .status-registrada { background: #dcfce7; color: #166534; }
+</style>
+{% endblock %}

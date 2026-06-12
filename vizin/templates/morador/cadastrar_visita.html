@@ -1,0 +1,21 @@
+{% extends 'morador/base_form.html' %}
+{% load static %}
+
+{% block title %}Agendar Visita - Vizin{% endblock %}
+{% block form_title %}Agendar Visita{% endblock %}
+{% block form_description %}Crie um aviso de visita para gerar um código de acesso.{% endblock %}
+
+{% block submit_label %}Agendar Visita{% endblock %}
+{% block cancel_url %}{% url 'visita:lista_visitas_morador' %}{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/imask"></script>
+<script>
+    var cpfField = document.getElementById('id_cpf'); // Assumindo que o ID do campo é id_cpf
+    if (cpfField) {
+        var cpfMask = IMask(cpfField, {
+            mask: '000.000.000-00'
+        });
+    }
+</script>
+{% endblock %}

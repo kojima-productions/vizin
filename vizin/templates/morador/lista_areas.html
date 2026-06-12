@@ -1,0 +1,35 @@
+{% extends 'morador/base_list.html' %}
+{% load static %}
+
+{% block title %}Áreas Comuns - Vizin{% endblock %}
+{% block page_title %}Áreas Comuns para Reserva{% endblock %}
+
+{% block list_content %}
+{% if areas %}
+<div class="posts-scroll-area">
+    {% for area in areas %}
+    <div class="post-card">
+        <div class="post-header">
+            <div class="post-author-info">
+                <div>
+                    <div class="author-name">{{ area.nome }}</div>
+                    <div class="author-role">Taxa: R$ {{ area.taxa_reserva|stringformat:".2f" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-body">
+            <strong>Regras:</strong><br>
+            <p style="white-space: pre-wrap; margin-top: 4px;">{{ area.regras }}</p>
+        </div>
+        
+        <div class="post-actions" style="border-top: 1px solid #f0f0f0; padding-top: 12px; margin-top: 12px; display: flex; justify-content: flex-end;">
+            <a href="{% url 'morador:fazer_reserva' area.id %}" class="btn-entrar" style="text-decoration:none; padding: 8px 16px; font-size: 14px;">Reservar</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="profile-card" style="text-align:center;padding:30px;">Nenhuma área comum disponível para reserva no momento.</div>
+{% endif %}
+{% endblock %}

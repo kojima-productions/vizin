@@ -1,0 +1,31 @@
+/* base.css — Variables, resets and core typography */
+:root {
+    --roxo-vizin: #8b5cf6;
+    --roxo-hover: #7c3aed;
+    --cinza-fundo: #f3f4f6;
+    --cinza-input: #e5e7eb;
+    --azul-link: #1d4ed8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--cinza-fundo);
+    color: #333;
+    line-height: 1.5;
+}
+
+a {
+    color: var(--azul-link);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    text-decoration: underline;
+}

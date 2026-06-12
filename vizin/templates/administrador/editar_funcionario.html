@@ -1,0 +1,11 @@
+{% extends 'administrador/base_form.html' %}
+
+{% block title %}Editar Funcionário{% endblock %}
+
+{% block form_title %}Editar Funcionário{% endblock %}
+
+{% block form_description %}Atualize os dados de <strong>{{ funcionario.user.get_full_name|default:funcionario.user.email }}</strong>.{% endblock %}
+
+{% block submit_label %}Salvar Alterações{% endblock %}
+
+{% block cancel_url %}{% url 'administrador:lista_funcionarios' %}{% endblock %}

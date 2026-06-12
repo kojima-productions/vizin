@@ -1,0 +1,48 @@
+{% extends 'administrador/base_list.html' %}
+
+{% block title %}Moradores{% endblock %}
+
+{% block page_title %}Moradores{% endblock %}
+
+{% block list_actions %}
+<div style="display:flex;justify-content:flex-end;margin:12px 0;">
+  <a href="{% url 'administrador:cadastrar_morador' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Morador</a>
+</div>
+{% endblock %}
+
+{% block list_content %}
+  {% if moradores %}
+  <div class="posts-scroll-area">
+    {% for m in moradores %}
+    <div class="post-card" id="morador-card-{{ m.id }}">
+      <a href="{% url 'administrador:editar_morador' m.id %}" class="btn-edit-card" title="Editar Morador">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      </a>
+      <button type="button" class="btn-delete-card" onclick="openModal('{{ m.id }}')" title="Excluir Morador">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+      </button>
+      <div class="post-header">
+        <div class="post-author-info">
+          <div>
+            <div class="author-name">{{ m.user.get_full_name|default:m.user.email }}</div>
+            <div class="author-role">Morador</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-body">
+        <strong>CPF:</strong> {{ m.cpf }}<br>
+        <strong>Email:</strong> {{ m.user.email }}<br>
+        <strong>Telefone:</strong> {{ m.telefone }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="profile-card" style="text-align:center;padding:30px;">Nenhum morador cadastrado.</div>
+  {% endif %}
+{% endblock %}
+
+{% block modals %}
+  {% include 'administrador/_delete_modal.html' with delete_url_base='/administrador/moradores/' item_id_prefix='morador-card-' message='Tem certeza que deseja remover este morador? Esta ação não pode ser desfeita.' %}
+{% endblock %}

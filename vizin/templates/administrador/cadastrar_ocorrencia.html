@@ -1,0 +1,125 @@
+{% extends 'administrador/base_form.html' %}
+
+{% block title %}{% if editando %}Editar{% else %}Nova{% endif %} Ocorrência{% endblock %}
+
+{% block form_title %}{% if editando %}Editar{% else %}Nova{% endif %} Ocorrência{% endblock %}
+
+{% block form_description %}Registre um incidente oficial contra uma unidade do condomínio.{% endblock %}
+
+{% block submit_label %}Salvar Ocorrência{% endblock %}
+
+{% block cancel_url %}{% url 'administrador:lista_ocorrencias' %}{% endblock %}
+
+{% block form_content %}
+  {% for field in form %}
+    <div class="input-group">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      
+      {% if field.name == 'apartamento' %}
+        <div class="search-container">
+          <input type="text" id="apartamento_search" class="input-field" placeholder="Pesquise por bloco ou número..." autocomplete="off">
+          <div id="search_results" class="search-results"></div>
+          <!-- Select original escondido para o Django -->
+          <div style="display: none;">{{ field }}</div>
+        </div>
+      {% else %}
+        {{ field }}
+      {% endif %}
+
+      {% if field.errors %}
+        <div style="color:#d32f2f;font-size:13px;margin-top:6px;">{{ field.errors.0 }}</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('apartamento_search');
+        const resultsDiv = document.getElementById('search_results');
+        const realSelect = document.getElementById('id_apartamento');
+        
+        if (!searchInput || !realSelect) return;
+
+        // Extrai as opções do select original
+        const options = Array.from(realSelect.options)
+            .filter(opt => opt.value !== "")
+            .map(opt => ({ id: opt.value, text: opt.text }));
+
+        // Se estiver editando, preenche o input com o valor atual
+        if (realSelect.selectedIndex > 0) {
+            searchInput.value = realSelect.options[realSelect.selectedIndex].text;
+        }
+
+        function filterResults(term) {
+            const filtered = options.filter(opt => 
+                opt.text.toLowerCase().includes(term.toLowerCase())
+            );
+            
+            resultsDiv.innerHTML = '';
+            
+            if (filtered.length > 0) {
+                filtered.forEach(opt => {
+                    const item = document.createElement('div');
+                    item.className = 'search-item';
+                    item.textContent = opt.text;
+                    item.onclick = () => selectOption(opt);
+                    resultsDiv.appendChild(item);
+                });
+            } else {
+                const noResult = document.createElement('div');
+                noResult.className = 'search-item no-results';
+                noResult.textContent = 'Nenhum apartamento encontrado';
+                resultsDiv.appendChild(noResult);
+            }
+            
+            resultsDiv.style.display = 'block';
+            searchInput.classList.add('searching');
+        }
+
+        function selectOption(opt) {
+            searchInput.value = opt.text;
+            realSelect.value = opt.id;
+            closeResults();
+        }
+
+        function closeResults() {
+            resultsDiv.style.display = 'none';
+            searchInput.classList.remove('searching');
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            filterResults(e.target.value);
+        });
+
+        searchInput.addEventListener('focus', (e) => {
+            filterResults(e.target.value);
+        });
+
+        // Fechar ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !resultsDiv.contains(e.target)) {
+                closeResults();
+                
+                // Validação: se o texto no input não bater com a opção selecionada no select real
+                const currentText = realSelect.selectedIndex > 0 ? realSelect.options[realSelect.selectedIndex].text : "";
+                if (searchInput.value !== currentText) {
+                    if (searchInput.value === "") {
+                        realSelect.value = "";
+                    } else {
+                        // Tenta encontrar um match exato
+                        const exactMatch = options.find(opt => opt.text.toLowerCase() === searchInput.value.toLowerCase());
+                        if (exactMatch) {
+                            selectOption(exactMatch);
+                        } else {
+                            // Se não for match exato, volta para o que estava ou limpa
+                            searchInput.value = currentText;
+                        }
+                    }
+                }
+            }
+        });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% trans "Completar cadastro" %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>.login-card { max-width: 480px; padding: 40px; }</style>
+</head>
+<body>
+  <main class="login-wrapper">
+    <div class="login-card">
+      <img src="{% static 'assets/icon.jpeg' %}" alt="Logo do aplicativo Vizin" class="logo-vizin">
+
+      <h1>{% trans "Completar cadastro" %}</h1>
+      <p class="small" style="margin-bottom:24px;">Complete os campos abaixo para finalizar o cadastro.</p>
+
+      {% if form.non_field_errors %}
+        <div style="color:red; margin-bottom:12px;">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form method="post" class="login-form">
+        {% csrf_token %}
+
+        {% for field in form %}
+          <div class="input-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div style="color:red">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <button class="btn-entrar" type="submit">{% trans "Continuar" %}</button>
+      </form>
+
+      <p class="small text-center mt-2"><a href="{% url 'administrador:registro' %}">{% trans "Voltar" %}</a></p>
+    </div>
+  </main>
+</body>
+</html>

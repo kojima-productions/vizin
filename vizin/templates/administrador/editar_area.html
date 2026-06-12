@@ -1,0 +1,11 @@
+{% extends 'administrador/base_form.html' %}
+
+{% block title %}Editar Área Comum{% endblock %}
+
+{% block form_title %}Editar Área Comum{% endblock %}
+
+{% block form_description %}Alterando dados de: <strong>{{ area.nome }}</strong>{% endblock %}
+
+{% block submit_label %}Salvar Alterações{% endblock %}
+
+{% block cancel_url %}{% url 'administrador:lista_areas' %}{% endblock %}

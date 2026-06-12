@@ -1,0 +1,11 @@
+{% extends 'comunicado/base_form.html' %}
+
+{% block title %}Editar Comunicado{% endblock %}
+
+{% block form_title %}Editar Comunicado{% endblock %}
+
+{% block form_description %}Altere os detalhes do comunicado abaixo.{% endblock %}
+
+{% block submit_label %}Salvar Alterações{% endblock %}
+
+{% block cancel_url %}{% url 'comunicado:lista_comunicados' %}{% endblock %}

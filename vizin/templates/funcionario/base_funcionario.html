@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} - Vizin</title>
+  
+  <!-- CSS Modular Global -->
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <header class="feed-header" style="max-width:900px;margin:20px auto;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button type="button" onclick="window.history.back();" class="btn-back">← </button>
+      <a href="{% if request.user.administrador %}/administrador/painel{% else %}/funcionario/painel{% endif %}" class="user-mini-link" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;">
+        <div class="mini-avatar"></div>
+        <div class="user-details">
+          <div class="user-name">
+            {% if request.user.administrador %}
+              <span class="admin-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            {% endif %}
+            {{ request.user.get_full_name|default:request.user.email }}
+          </div>
+          <div class="user-address">{% if request.user.administrador %}Administrador{% else %}Funcionário{% endif %}</div>
+        </div>
+      </a>
+    </div>
+    <div class="header-logo">Vizin</div>
+  </header>
+
+  <main style="display:flex;justify-content:center;">
+    <div style="width:100%;max-width:900px;padding:0 16px;">
+        {% block main_content %}{% endblock %}
+    </div>
+  </main>
+
+  {% block modals %}{% endblock %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

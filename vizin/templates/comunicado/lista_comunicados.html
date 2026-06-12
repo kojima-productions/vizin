@@ -1,0 +1,98 @@
+{% extends 'comunicado/base_list.html' %}
+
+{% block title %}Comunicados{% endblock %}
+
+{% block page_title %}Comunicados{% endblock %}
+
+{% block list_actions %}
+  {% if request.user.administrador %}
+  <div style="display:flex;justify-content:flex-end;margin:12px 0;">
+    <a href="{% url 'comunicado:cadastrar_comunicado' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Comunicado</a>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block list_content %}
+  {% if comunicados %}
+  <div class="posts-scroll-area">
+    {% for comunicado in comunicados %}
+    <div class="post-card" id="comunicado-card-{{ comunicado.id }}">
+      {% if request.user.administrador %}
+      <a href="{% url 'comunicado:editar_comunicado' comunicado.id %}" class="btn-edit-card" title="Editar">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      </a>
+      <button type="button" class="btn-delete-card" onclick="openModal('{{ comunicado.id }}')" title="Excluir">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+      </button>
+      {% endif %}
+      
+      <div class="post-header">
+        <div class="post-author-info">
+          <div>
+            <span class="badge-tipo 
+              {% if comunicado.tipo == 'Urgente' %}tipo-urgente
+              {% elif comunicado.tipo == 'Manutenção' %}tipo-manutencao
+              {% elif comunicado.tipo == 'Segurança' %}tipo-seguranca
+              {% elif comunicado.tipo == 'Assembleia' %}tipo-assembleia{% endif %}">
+              {{ comunicado.tipo }}
+            </span>
+            <div class="author-name">{{ comunicado.titulo }}</div>
+            <div class="author-role">{{ comunicado.data|date:"d/m/Y H:i" }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-body">
+        <p style="white-space: pre-wrap; margin-top: 8px;">{{ comunicado.descricao }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="profile-card" style="text-align:center;padding:30px;">Nenhum comunicado encontrado.</div>
+  {% endif %}
+{% endblock %}
+
+{% block pagination %}
+    {% if comunicados.paginator.num_pages > 1 %}
+    <div class="pagination" style="display:flex;justify-content:center;gap:10px;margin:20px 0;">
+      {% if comunicados.has_previous %}
+        <a href="?page=1" class="btn-back" style="text-decoration:none;">&laquo; Primeira</a>
+        <a href="?page={{ comunicados.previous_page_number }}" class="btn-back" style="text-decoration:none;">Anterior</a>
+      {% endif %}
+
+      <span style="align-self:center;">Página {{ comunicados.number }} de {{ comunicados.paginator.num_pages }}</span>
+
+      {% if comunicados.has_next %}
+        <a href="?page={{ comunicados.next_page_number }}" class="btn-back" style="text-decoration:none;">Próxima</a>
+        <a href="?page={{ comunicados.paginator.num_pages }}" class="btn-back" style="text-decoration:none;">Última &raquo;</a>
+      {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .badge-tipo {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      background: #f3f4f6;
+      color: #374151;
+    }
+    .tipo-urgente { background: #fee2e2; color: #991b1b; }
+    .tipo-manutencao { background: #fef3c7; color: #92400e; }
+    .tipo-seguranca { background: #dcfce7; color: #166534; }
+    .tipo-assembleia { background: #dbeafe; color: #1e40af; }
+</style>
+{% endblock %}
+
+{% block modals %}
+  {% if request.user.administrador %}
+    {% include 'comunicado/_delete_modal.html' %}
+  {% endif %}
+{% endblock %}

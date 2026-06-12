@@ -1,0 +1,11 @@
+{% extends 'administrador/base_form.html' %}
+
+{% block title %}Editar Morador{% endblock %}
+
+{% block form_title %}Editar Morador{% endblock %}
+
+{% block form_description %}Atualize os dados de <strong>{{ morador.user.get_full_name|default:morador.user.email }}</strong>.{% endblock %}
+
+{% block submit_label %}Salvar Alterações{% endblock %}
+
+{% block cancel_url %}{% url 'administrador:lista_moradores' %}{% endblock %}

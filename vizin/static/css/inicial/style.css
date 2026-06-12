@@ -1,0 +1,190 @@
+/* 1. RESET E VARIÁVEIS GERAIS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --roxo-vizin: #8b5cf6; /* A cor principal */
+    --roxo-hover: #7c3aed; /* Um roxo um pouquinho mais escuro para os botões */
+}
+
+/* TELA DE APRESENTAÇÃO */
+
+/* Fundo escuro */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.hero-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: radial-gradient(circle at 50% 40%, rgba(124, 77, 255, 0.1) 0%, transparent 60%);
+}
+
+.hero-header {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Agrupa a imagem e o texto lado a lado */
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+}
+
+/* Tamanho e formato da imagem do logo */
+.hero-logo-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--roxo-vizin);
+}
+
+.hero-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px; 
+    text-align: center;
+    margin-top: -50px; 
+}
+
+.hero-title {
+    font-size: 42px; 
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.hero-highlight {
+    color: var(--roxo-vizin);
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    color: #a0a0a0; 
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+/* Agrupamento dos botões */
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 350px; 
+}
+
+.btn-hero {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none; 
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* O botão administrador em destaque */
+.btn-primary {
+    background-color: var(--roxo-vizin);
+    color: white;
+    border: 2px solid var(--roxo-vizin);
+}
+
+.btn-primary:hover {
+    background-color: var(--roxo-hover);
+    border-color: var(--roxo-hover);
+}
+
+/* Os botões secundários (Morador e Funcionário) vazados para não poluir visualmente */
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 1px solid #444; 
+}
+
+.btn-secondary:hover {
+    background-color: #222; 
+    border-color: #666;
+}
+
+/* Estilo da pílula do Slogan */
+.hero-slogan {
+    background-color: rgba(124, 77, 255, 0.15); 
+    color: var(--roxo-vizin); 
+    border: 1px solid rgba(124, 77, 255, 0.3); 
+    padding: 6px 16px;
+    border-radius: 20px; 
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; 
+    margin-bottom: 25px; 
+}
+
+/* Frase do rodapé */
+.hero-trust {
+    margin-top: 50px;
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* ANIMAÇÕES DA LANDING PAGE */
+
+/* Definindo como o movimento vai acontecer */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animando o conteúdo principal */
+.hero-content {
+    opacity: 0; 
+    animation: fadeUp 1s ease-out forwards; 
+}
+
+/* Animando os botões com efeito cascata */
+.hero-actions {
+    opacity: 0;
+    animation: fadeUp 1s ease-out 0.4s forwards; 
+}
+
+/* Animando o rodapé */
+.hero-trust {
+    opacity: 0;
+    animation: fadeUp 1s ease-out 0.8s forwards;
+}

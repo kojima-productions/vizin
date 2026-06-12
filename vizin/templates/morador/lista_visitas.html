@@ -1,0 +1,60 @@
+{% extends 'morador/base_list.html' %}
+{% load static %}
+
+{% block title %}Minhas Visitas - Vizin{% endblock %}
+{% block page_title %}Meus Avisos de Visita{% endblock %}
+
+{% block list_actions %}
+<div style="display:flex;justify-content:flex-end;margin:12px 0;">
+    <a href="{% url 'visita:cadastrar_visita' %}" class="btn-dashboard" style="max-width:220px;">➕ Novo Aviso</a>
+</div>
+{% endblock %}
+
+{% block list_content %}
+{% if page_obj %}
+<div class="posts-scroll-area">
+    {% for v in page_obj %}
+    <div class="post-card">
+        <div class="post-header">
+            <div class="post-author-info">
+                <div>
+                    <div class="author-name">{{ v.nome }}</div>
+                    <div class="author-role">CPF: {{ v.cpf }}</div>
+                </div>
+            </div>
+            <div class="status-badge status-{{ v.status|slugify }}">
+                {{ v.status }}
+            </div>
+        </div>
+
+        <div class="post-body">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Código de Acesso:</strong> <span style="font-size: 1.2em; color: var(--roxo-vizin); font-weight: bold; letter-spacing: 2px;">{{ v.acesso }}</span><br>
+                    <strong>Criado em:</strong> {{ v.data_criacao|date:"d/m/Y H:i" }}
+                    {% if v.data_entrada %}
+                        <br><strong>Entrada em:</strong> {{ v.data_entrada|date:"d/m/Y H:i" }}
+                    {% endif %}
+                </div>
+                <div style="text-align: right;">
+                    <button class="btn-back" onclick="copyToClipboard('{{ v.acesso }}')" style="font-size: 12px; padding: 4px 8px;">Copiar Código</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="profile-card" style="text-align:center;padding:30px;">Nenhum aviso de visita cadastrado.</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Código copiado para a área de transferência!');
+      });
+    }
+</script>
+{% endblock %}

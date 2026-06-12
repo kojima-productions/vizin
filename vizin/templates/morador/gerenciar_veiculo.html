@@ -1,0 +1,38 @@
+{% extends 'morador/base_form.html' %}
+{% load static %}
+
+{% block title %}Gerenciar Veículo - Vizin{% endblock %}
+{% block form_title %}{% if veiculo %}Editar{% else %}Cadastrar{% endif %} Veículo{% endblock %}
+{% block form_description %}{% if veiculo %}Atualize as informações do seu veículo.{% else %}Cadastre o veículo do seu apartamento.{% endif %}{% endblock %}
+
+{% block form_content %}
+    {% for field in form %}
+        {% include 'morador/_form_fields.html' with field=field %}
+    {% endfor %}
+{% endblock %}
+
+{% block form_actions %}
+    <div class="profile-actions" style="width:100%;margin-top:12px;">
+        <button type="submit" class="btn-entrar">Salvar Informações</button>
+        
+        {% if veiculo %}
+            <button type="button" onclick="openModal('{{ veiculo.id }}', '{% url 'morador:deletar_veiculo' %}')" class="btn-excluir">Excluir Veículo</button>
+        {% endif %}
+        
+        <a href="{% url 'morador:painel' %}" class="btn-excluir" style="text-decoration:none;">Cancelar</a>
+    </div>
+{% endblock %}
+
+{% block modals %}
+    {% if veiculo %}
+        {% include 'morador/_delete_modal.html' with item_id_prefix='' message='Tem certeza que deseja remover este veículo? Esta ação não pode ser desfeita.' %}
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('itemDeleted', function(e) {
+        window.location.href = "{% url 'morador:painel' %}";
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'administrador/base_form.html' %}
+
+{% block title %}Cadastrar Funcionário{% endblock %}
+
+{% block form_title %}Cadastrar Funcionário{% endblock %}
+
+{% block form_description %}Preencha os dados do novo funcionário abaixo.{% endblock %}
+
+{% block cancel_url %}{% url 'administrador:lista_funcionarios' %}{% endblock %}

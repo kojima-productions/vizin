@@ -1,0 +1,11 @@
+{% extends 'administrador/base_form.html' %}
+
+{% block title %}Editar Veículo{% endblock %}
+
+{% block form_title %}Editar Veículo{% endblock %}
+
+{% block form_description %}Atualize os dados do veículo <strong>{{ veiculo.modelo }}</strong> ({{ veiculo.placa }}).{% endblock %}
+
+{% block submit_label %}Salvar Alterações{% endblock %}
+
+{% block cancel_url %}{% url 'administrador:lista_veiculos' %}{% endblock %}

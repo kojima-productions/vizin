@@ -1,0 +1,9 @@
+{% extends 'morador/base_form.html' %}
+{% load static %}
+
+{% block title %}Nova Reclamação - Vizin{% endblock %}
+{% block form_title %}Nova Reclamação{% endblock %}
+{% block form_description %}Descreva o problema para que possamos analisá-lo.{% endblock %}
+
+{% block submit_label %}Registrar Reclamação{% endblock %}
+{% block cancel_url %}{% url 'morador:lista_reclamacoes' %}{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'administrador/base_list.html' %}
+
+{% block title %}Gestão de Encomendas{% endblock %}
+
+{% block page_title %}Encomendas do Condomínio{% endblock %}
+
+{% block list_actions %}
+<div style="display:flex;justify-content:flex-end;margin:12px 0;">
+  <a href="{% url 'encomenda:cadastrar_encomenda' %}" class="btn-dashboard" style="max-width:220px;">📦 Registrar Encomenda</a>
+</div>
+{% endblock %}
+
+{% block list_content %}
+  {% if encomendas %}
+  <div class="posts-scroll-area">
+    {% for e in encomendas %}
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-author-info">
+          <div>
+            <div class="author-name">{{ e.apartamento }}</div>
+            <div class="author-role">{{ e.get_status_display }}</div>
+          </div>
+        </div>
+        <div class="post-time">{{ e.data_chegada|date:"d/m/Y H:i" }}</div>
+      </div>
+
+      <div class="post-body">
+        <strong>Descrição:</strong> {{ e.descricao }}<br>
+        <strong>Registrado por:</strong> {{ e.registrado_por.get_full_name|default:e.registrado_por.username }}<br>
+        
+        {% if e.status == 'Entregue' %}
+          <div style="margin-top: 8px; color: #059669; font-weight: bold;">
+            ✓ Entregue em {{ e.data_entrega|date:"d/m/Y H:i" }} por {{ e.entregue_por.get_full_name|default:e.entregue_por.username }}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if e.status == 'Recebida' %}
+      <div class="post-actions" style="border-top: 1px solid #eee; margin-top: 12px; padding-top: 12px;">
+        <form action="{% url 'encomenda:registrar_entrega' e.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn-entrar" style="width: auto; padding: 8px 16px; font-size: 14px;">Marcar como Entregue</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="profile-card" style="text-align:center;padding:30px;">Nenhuma encomenda registrada.</div>
+  {% endif %}
+{% endblock %}

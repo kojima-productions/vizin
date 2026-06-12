@@ -1,0 +1,33 @@
+{% extends 'morador/base_list.html' %}
+{% load static %}
+
+{% block title %}Minhas Ocorrências - Vizin{% endblock %}
+{% block page_title %}Minhas Ocorrências{% endblock %}
+
+{% block list_content %}
+{% if page_obj %}
+<div class="posts-scroll-area">
+    {% for o in page_obj %}
+    <div class="post-card">
+        <div class="post-header">
+            <div class="post-author-info">
+                <div>
+                    <div class="author-name">{{ o.tipo_ocorrencia }}</div>
+                    <div class="author-role">{{ o.data|date:"d/m/Y H:i" }}</div>
+                </div>
+            </div>
+            <div class="status-badge status-registrada">
+                Registrada
+            </div>
+        </div>
+
+        <div class="post-body">
+            {{ o.descricao }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="profile-card" style="text-align:center;padding:30px;">Não há ocorrências registradas para o seu apartamento.</div>
+{% endif %}
+{% endblock %}
