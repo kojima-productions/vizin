@@ -70,29 +70,21 @@ def fazer_reserva(request, area_id):
         raise PermissionDenied
     
     area = get_object_or_404(Area, id=area_id, administrador=request.user.morador.administrador)
-    form = ReservaForm(request.POST or None)
-
-    if request.method == 'POST' and form.is_valid():
-        inicio = form.cleaned_data['horario_inicio']
-        fim = form.cleaned_data['horario_fim']
-
-        # Validação de conflito de horário
-        conflito = Reserva.objects.filter(
-            area=area,
-            horario_inicio__lt=fim,
-            horario_fim__gt=inicio
-        ).exists()
-
-        if conflito:
-            form.add_error(None, "Já existe uma reserva para esta área no horário selecionado.")
-        else:
+    
+    # Criamos o formulário. Se for POST, associamos a área à instância temporária
+    # para que o método clean() do form possa validar conflitos.
+    if request.method == 'POST':
+        form = ReservaForm(request.POST)
+        form.instance.area = area
+        if form.is_valid():
             reserva = form.save(commit=False)
-            reserva.area = area
             reserva.morador = request.user.morador
             reserva.administrador = area.administrador
             reserva.save()
             messages.success(request, f'Reserva para {area.nome} realizada com sucesso!')
             return redirect('morador:minhas_reservas')
+    else:
+        form = ReservaForm()
 
     return render(request, 'morador/fazer_reserva.html', {'form': form, 'area': area})
 
