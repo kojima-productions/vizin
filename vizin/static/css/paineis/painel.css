@@ -98,7 +98,7 @@ main {
 }
 
 /* GRID DO DASHBOARD */
-.admin-dashboard-grid {
+.dashboard-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
@@ -107,7 +107,7 @@ main {
 }
 
 /* Estilo dos Botões do Grid */
-.admin-dashboard-grid .btn-redefinir {
+.dashboard-grid .btn-redefinir {
     background-color: white;
     color: #4b5563;
     border: 1px solid rgba(0,0,0,0.08);
@@ -126,14 +126,14 @@ main {
     font-weight: 700;
 }
 
-.admin-dashboard-grid .btn-redefinir:hover {
+.dashboard-grid .btn-redefinir:hover {
     transform: translateY(-5px);
     border-color: var(--roxo-vizin);
     color: var(--roxo-vizin);
     box-shadow: 0 10px 20px rgba(139, 92, 246, 0.12);
 }
 
-.admin-dashboard-grid .btn-icon {
+.dashboard-grid .btn-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -146,12 +146,12 @@ main {
     transition: all 0.3s ease;
 }
 
-.admin-dashboard-grid .btn-redefinir:hover .btn-icon {
+.dashboard-grid .btn-redefinir:hover .btn-icon {
     background-color: var(--roxo-vizin);
     color: white;
 }
 
-.admin-dashboard-grid .btn-icon svg {
+.dashboard-grid .btn-icon svg {
     width: 26px;
     height: 26px;
     stroke-width: 1.5;
@@ -159,20 +159,20 @@ main {
 
 /* RESPONSIVIDADE */
 @media (max-width: 900px) {
-    .admin-dashboard-grid {
+    .dashboard-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 15px;
     }
 }
 
 @media (max-width: 600px) {
-    .admin-dashboard-grid {
+    .dashboard-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 400px) {
-    .admin-dashboard-grid {
+    .dashboard-grid {
         grid-template-columns: 1fr;
     }
 }
