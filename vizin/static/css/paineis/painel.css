@@ -1,0 +1,189 @@
+/* painel.css — Estilos específicos para o Painel Administrativo */
+
+/* VARIÁVEIS E RESETS BÁSICOS */
+:root {
+    --roxo-vizin: #8b5cf6;
+    --roxo-hover: #7c3aed;
+    --cinza-fundo: #f3f4f6;
+    --cinza-input: #e5e7eb;
+    --azul-link: #1d4ed8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--cinza-fundo);
+    color: #333;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.container-painel {
+    width: 100%;
+    max-width: 900px;
+    padding: 0 16px;
+}
+
+/* HEADER (Copiado de style.css para manter consistência) */
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f1;
+    padding: 12px 22px;
+    border-radius: 30px; 
+    margin: 15px auto;
+    max-width: 900px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(229,231,235,0.7);
+}
+
+.user-mini-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.mini-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #ccc; /* Placeholder se não houver imagem */
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 11px;
+    font-weight: 800;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-address {
+    font-size: 9px;
+    color: #666;
+    line-height: 1.2;
+}
+
+.admin-icon svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    color: var(--roxo-vizin);
+}
+
+.header-logo {
+    font-size: 14px;
+    font-weight: 800;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+/* GRID DO DASHBOARD */
+.admin-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+/* Estilo dos Botões do Grid */
+.admin-dashboard-grid .btn-redefinir {
+    background-color: white;
+    color: #4b5563;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 16px;
+    padding: 20px 10px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 130px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.admin-dashboard-grid .btn-redefinir:hover {
+    transform: translateY(-5px);
+    border-color: var(--roxo-vizin);
+    color: var(--roxo-vizin);
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.12);
+}
+
+.admin-dashboard-grid .btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background-color: #f8f7ff;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    color: var(--roxo-vizin);
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard-grid .btn-redefinir:hover .btn-icon {
+    background-color: var(--roxo-vizin);
+    color: white;
+}
+
+.admin-dashboard-grid .btn-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.5;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 900px) {
+    .admin-dashboard-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 400px) {
+    .admin-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* MENSAGENS FEEDBACK */
+.post-card {
+    background-color: #eaf3ff;
+    color: #063;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    border-left: 4px solid #063;
+}
