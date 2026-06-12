@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vizin - Bem-vindo</title>
+    <link rel="stylesheet" href="{% static 'css/inicial/style.css' %}">
+</head>
+<body class="dark-mode">
+
+    <main class="hero-wrapper">
+        
+        <header class="hero-header">
+            <div class="brand-container">
+                <img src="{% static 'assets/icon.jpeg' %}" alt="Logo Vizin" class="hero-logo-img">
+            <div class="logo-text">VIZIN</div>
+            </div>
+        </header>
+
+        <div class="hero-content">
+            <span class="hero-slogan">Solução para o seu conforto</span>
+            
+            <h1 class="hero-title">
+                Gestão condominial <br>
+                <span class="hero-highlight">feita de forma simples</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                O Vizin é a plataforma de desenvolvimento e comunicação do seu condomínio. Escolha o seu perfil abaixo para iniciar a sua sessão.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{% url 'administrador:login' %}" class="btn-hero btn-primary">Entrar como Administrador</a>
+                <a href="{% url 'morador:login' %}" class="btn-hero btn-secondary">Entrar como Morador</a>
+                <a href="{% url 'funcionario:login' %}" class="btn-hero btn-secondary">Entrar como Funcionário</a>
+            </div>
+
+            <p class="hero-trust">Desenvolvido para modernizar a sua gestão condominial.</p>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
