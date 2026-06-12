@@ -61,5 +61,26 @@ class ReservaForm(forms.ModelForm):
             
             if fim and inicio >= fim:
                 raise forms.ValidationError("O horário de início deve ser anterior ao horário de término.")
+            
+            # Validação de conflito de horário
+            # A 'area' geralmente vem do contexto da view, mas se estiver no form (não está nesse caso), pegamos aqui.
+            # Como o form não tem o campo 'area', precisamos garantir que a validação de conflito 
+            # tenha acesso à área. No fluxo atual, a view passa a instância ou trata isso.
+            # Vamos ajustar para que, se houver uma instância de reserva com área associada, validamos.
+            area = getattr(self.instance, 'area', None)
+            
+            if inicio and fim and area:
+                conflitos = Reserva.objects.filter(
+                    area=area,
+                    status__in=[Reserva.Status.ABERTO, Reserva.Status.APROVADO],
+                    horario_inicio__lt=fim,
+                    horario_fim__gt=inicio
+                )
+                
+                if self.instance.pk:
+                    conflitos = conflitos.exclude(pk=self.instance.pk)
+                
+                if conflitos.exists():
+                    raise forms.ValidationError("Já existe uma reserva pendente ou aprovada para esta área no horário selecionado.")
         
         return cleaned_data
