@@ -22,3 +22,12 @@ Para o desenvolvimento utilizaremos:
 | Python | 3.13.5 |
 | Django | 6.0.4 |
 | Supabase | --  |
+
+## Executando o projeto
+
+Para executar o projeto é necessário:
+- Inserir arquivo .env na raiz do projeto django 'vizin/', junto a manage.py e os demais diretórios referentes ao django.
+- Instalar os pacotes necessários com `pip install -r requirements.txt`
+- Executar o projeto com `python manage.py runserver` 
+
+**OBS:** Como o supabase é construido em cima da estrutura do postgresql, para o funcionamento correto das funcionalidades referentes ao CRUD é preciso ter o postgresql 18.4 instalado
